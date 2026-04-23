@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Env / creds — никогда не коммитим
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+credentials.json
+storage_state.json
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+.claude/
+
+# Backups
+*.bak
+*.orig
+
+# OS garbage
+Thumbs.db
+Desktop.ini
+
+# Логи
+*.log
+npm-debug.log*
