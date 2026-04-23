@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Croissant Import — Финмодель · Импорт замороженной виеннуазери в РК</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  /* Espresso / caramel premium palette (имена переменных сохранены от оригинала) */
+  --navy:#1A1308;--navy2:#241A0E;--navy3:#2E2314;--navy4:#3B2D1C;
+  --teal:#D4A574;--gold:#E8C077;--green:#8FA857;--red:#C85A3E;
+  --muted:#6B5844;--text:#F4ECD8;--text2:#BBA888;--text3:#7A6850;
+  --border:rgba(212,165,116,0.10);--border2:rgba(212,165,116,0.20);
+  --font:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--navy);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh}
+.app{display:flex;min-height:100vh}
+.sidebar{width:210px;min-width:210px;background:var(--navy2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{padding:22px 18px 16px;border-bottom:1px solid var(--border)}
+.logo-badge{font-family:var(--mono);font-size:10px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.logo-name{font-size:14px;font-weight:600;line-height:1.3}
+.logo-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.nav{padding:10px 0;flex:1}
+.nav-sec{padding:12px 18px 3px;font-size:10px;font-family:var(--mono);color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;cursor:pointer;color:var(--text2);font-size:12.5px;border-left:2px solid transparent;transition:.15s;user-select:none}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.nav-item.active{color:var(--teal);border-left-color:var(--teal);background:rgba(212,165,116,.06)}
+.nav-item svg{flex-shrink:0;opacity:.6}.nav-item.active svg{opacity:1}
+.nav-item.dds-nav{color:var(--green)}.nav-item.dds-nav.active{color:var(--green);border-left-color:var(--green);background:rgba(143,168,87,.06)}
+.sb-foot{padding:12px 18px;border-top:1px solid var(--border);font-size:10px;color:var(--text3);font-family:var(--mono)}
+.mode-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;cursor:pointer;transition:.15s;border:1px solid}
+.mode-pill.auto{background:rgba(212,165,116,.12);color:var(--teal);border-color:rgba(212,165,116,.3)}
+.mode-pill.manual{background:rgba(232,192,119,.12);color:var(--gold);border-color:rgba(232,192,119,.3)}
+.mode-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:50px;background:var(--navy2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:10}
+.page-title{font-size:13px;font-weight:500}
+.sync-badge{display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--green);background:rgba(143,168,87,.1);padding:3px 9px;border-radius:20px;border:1px solid rgba(143,168,87,.22)}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.topbar-right{margin-left:auto;display:flex;gap:8px}
+.kpi-pill{font-size:11px;font-family:var(--mono);padding:4px 10px;border-radius:4px;border:1px solid var(--border2);color:var(--text2)}
+.kpi-pill b{color:var(--teal)}
+.content{padding:22px 24px;flex:1}
+.panel{display:none}.panel.active{display:block}
+.ph{margin-bottom:18px}.ph h1{font-size:19px;font-weight:500;margin-bottom:3px}.ph p{font-size:12px;color:var(--text2)}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:9px;margin-bottom:20px}
+.kc{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:13px 14px;position:relative;overflow:hidden;transition:.18s}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--teal))}
+.kc:hover{transform:translateY(-1px);border-color:var(--border2)}
+.kc-label{font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.kc-val{font-size:21px;font-weight:500;color:var(--ac,var(--teal));font-family:var(--mono);line-height:1}
+.kc-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.kc.g{--ac:var(--green)}.kc.a{--ac:var(--gold)}.kc.r{--ac:var(--red)}.kc.w{--ac:var(--text2)}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.cb{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:14px}
+.cb.full{grid-column:1/-1}
+.ct{font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px}
+.cw{position:relative;width:100%;height:195px}
+.cw.tall{height:255px}
+.leg{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:7px}
+.leg span{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)}
+.lsq{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.tb{background:var(--navy3);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px}
+.tb table{width:100%;border-collapse:collapse;font-size:12.5px}
+.tb th{padding:8px 11px;font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.05em;text-align:right;border-bottom:1px solid var(--border);background:var(--navy4);white-space:nowrap}
+.tb th:first-child{text-align:left}
+.tb td{padding:7px 11px;border-bottom:1px solid var(--border);text-align:right;color:var(--text2);font-family:var(--mono);font-size:12px}
+.tb td:first-child{text-align:left;color:var(--text2);font-family:var(--font);font-size:12.5px}
+.tb tr:last-child td{border:none}
+.tb tr.tot td{background:var(--navy4);color:var(--text);font-weight:500;border-top:1px solid var(--border2)}
+.tb tr.sh td{background:var(--navy4);color:var(--text3);font-size:10px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:5px 11px}
+.tb tr.hi td{color:var(--text);font-weight:500}
+.neg{color:var(--red)!important}.pos{color:var(--green)!important}
+.isec{margin-bottom:18px}
+.isec h3{font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:11px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.igrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:11px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11px;color:var(--text2);font-family:var(--mono)}
+.field .frow{display:flex;align-items:center;gap:7px}
+.field input[type=range]{flex:1;height:3px;-webkit-appearance:none;background:var(--border2);border-radius:2px;outline:none;cursor:pointer}
+.field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--teal);cursor:pointer}
+.field .fval{font-size:11px;font-family:var(--mono);color:var(--teal);min-width:66px;text-align:right}
+.dds-tb{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap}
+.tgg{display:flex;background:var(--navy4);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.tgb{padding:5px 13px;font-size:12px;cursor:pointer;color:var(--text2);border:none;background:none;font-family:var(--font);transition:.15s}
+.tgb.active{background:var(--teal);color:var(--navy);font-weight:600}
+.breset{padding:5px 11px;font-size:11px;background:none;border:1px solid var(--border2);color:var(--text2);border-radius:6px;cursor:pointer;transition:.15s}
+.breset:hover{border-color:var(--teal);color:var(--teal)}
+.dnote{font-size:11px;color:var(--text2);background:var(--navy4);border:1px solid var(--border);border-left:3px solid var(--teal);padding:7px 11px;border-radius:0 6px 6px 0;margin-bottom:12px;font-family:var(--mono)}
+.dds-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.dds-tbl th{padding:7px 9px;font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.06em;text-align:right;border-bottom:1px solid var(--border);background:var(--navy4);white-space:nowrap}
+.dds-tbl th:first-child{text-align:left}
+.dds-tbl td{padding:5px 9px;border-bottom:1px solid var(--border);vertical-align:middle}
+.dds-tbl td:first-child{color:var(--text2);font-size:12px}
+.dds-tbl td:not(:first-child){text-align:right}
+.dds-tbl tr.dsec td{background:var(--navy4);font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.05em;padding:5px 9px}
+.dds-tbl tr.dtot td{background:var(--navy4);font-weight:500;color:var(--text);border-top:1px solid var(--border2)}
+.dds-tbl tr.dfcf td{background:rgba(212,165,116,.07);border-top:2px solid var(--teal);font-weight:500}
+.dds-tbl tr.dfcf td:first-child{color:var(--teal);font-size:13px}
+.dds-tbl tr.dcum td{background:var(--navy4)}
+.hint{font-size:10px;color:var(--text3);display:block;margin-top:1px}
+.cv{font-family:var(--mono);font-size:12px;text-align:right}
+.ni{width:100%;padding:3px 6px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:#E8EDF5;font-family:var(--mono);font-size:12px;text-align:right;outline:none;transition:.15s}
+.ni:focus{border-color:var(--teal);background:rgba(212,165,116,.08);color:#fff}
+.ni::placeholder{color:rgba(255,255,255,.25)}
+.ni.ov{border-color:var(--gold);color:var(--gold);background:rgba(232,192,119,.08)}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:18px}
+.sc-card{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:15px;border-top:3px solid var(--sc-c)}
+.sc-name{font-size:13px;font-weight:500;color:var(--sc-c);margin-bottom:3px}
+.sc-sub{font-size:10px;color:var(--text3);margin-bottom:11px;font-family:var(--mono)}
+.sc-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.sc-row:last-child{border:none}
+.sc-key{color:var(--text3)}.sc-val{font-family:var(--mono);font-weight:500;color:var(--sc-c)}
+.fl-row{display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.fl-row:last-child{border:none}
+.fl-name{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--teal)}
+.fl-formula{font-family:var(--mono);font-size:11px;color:var(--text3);background:var(--navy4);padding:3px 8px;border-radius:4px}
+.fl-val{font-family:var(--mono);font-size:13px;font-weight:500;text-align:right}
+.hr-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px;margin-bottom:18px}
+.hr-block{background:var(--navy3);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.hr-block-head{background:var(--navy4);padding:8px 14px;display:flex;justify-content:space-between;align-items:center}
+.hr-block-name{font-size:12px;font-weight:500;color:var(--teal)}
+.hr-block-count{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.hr-row{display:grid;grid-template-columns:1fr 90px 90px 60px;gap:0;border-bottom:1px solid var(--border)}
+.hr-row:last-child{border:none}
+.hr-row div{padding:7px 14px;font-size:12px}
+.hr-row div:not(:first-child){font-family:var(--mono);text-align:right;color:var(--text2)}
+.hr-row.header div{font-size:10px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;background:var(--navy4)}
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.risk-matrix-wrap{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:14px}
+.matrix-title{font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.07em}
+.heatmap{display:grid;grid-template-columns:32px repeat(5,1fr);gap:3px}
+.hm-cell{height:34px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono);font-weight:500}
+.hm-label{font-size:9px;color:var(--text3);text-align:center;display:flex;align-items:center;justify-content:center}
+.hm-1{background:rgba(143,168,87,.15);color:var(--green)}
+.hm-2{background:rgba(143,168,87,.25);color:var(--green)}
+.hm-3{background:rgba(232,192,119,.2);color:var(--gold)}
+.hm-4{background:rgba(200,90,62,.2);color:var(--red)}
+.hm-5{background:rgba(200,90,62,.35);color:var(--red)}
+.hm-x{background:rgba(200,90,62,.5);color:var(--red);font-weight:700}
+.hm-badge{background:rgba(212,165,116,.15);color:var(--teal);font-size:9px;border-radius:3px;padding:0 3px}
+.risk-list{display:flex;flex-direction:column;gap:8px}
+.risk-item{background:var(--navy3);border:1px solid var(--border);border-radius:6px;padding:10px 12px}
+.risk-item-head{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.risk-num{font-family:var(--mono);font-size:11px;font-weight:500;min-width:22px;color:var(--text3)}
+.risk-name{font-size:12px;font-weight:500;flex:1}
+.risk-score{font-family:var(--mono);font-size:13px;font-weight:700;min-width:28px;text-align:right}
+.risk-score.hi{color:var(--red)}.risk-score.med{color:var(--gold)}.risk-score.lo{color:var(--green)}
+.risk-detail{font-size:11px;color:var(--text3);margin-bottom:4px}
+.risk-mit{font-size:11px;color:var(--text2);border-left:2px solid var(--border2);padding-left:8px}
+.risk-bar{height:3px;border-radius:2px;background:var(--border);margin-top:6px;overflow:hidden}
+.risk-bar-fill{height:100%;border-radius:2px}
+/* SAVE BUTTON */
+.save-btn{padding:10px 28px;font-size:13px;font-weight:600;background:#8B5A2B;color:#fff;border:none;border-radius:8px;cursor:pointer;transition:all .4s ease;font-family:var(--font);letter-spacing:.02em;position:relative;overflow:hidden}
+.save-btn:hover{background:#A67A4B;transform:translateY(-1px)}
+.save-btn.saved{background:#8FA857;transform:scale(1.03)}
+.save-btn.saved::after{content:' ✓ Сохранено'}
+@keyframes savePulse{0%{box-shadow:0 0 0 0 rgba(143,168,87,.5)}70%{box-shadow:0 0 0 12px rgba(143,168,87,0)}100%{box-shadow:0 0 0 0 rgba(143,168,87,0)}}
+.save-btn.saved{animation:savePulse .6s ease-out}
+/* HR ADD FORM */
+.hr-add-form{background:var(--navy4);border:1px solid var(--border2);border-radius:8px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;align-items:end}
+.hr-add-form input,.hr-add-form select{width:100%;padding:6px 8px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:12px;font-family:var(--font);outline:none}
+.hr-add-form input:focus,.hr-add-form select:focus{border-color:var(--teal)}
+.hr-add-form label{font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:3px}
+.hr-add-btn{padding:6px 16px;background:var(--teal);color:var(--navy);border:none;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font)}
+.hr-del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:11px;opacity:0;transition:.15s;padding:2px 4px}
+.hr-row:hover .hr-del-btn{opacity:1}
+.hr-del-btn:hover{color:var(--red)}
+/* CAPEX SPLIT */
+.capex-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.capex-card{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:16px;border-top:3px solid var(--cc)}
+.capex-card h3{font-size:13px;font-weight:500;margin-bottom:10px}
+@media(max-width:768px){
+  .sidebar{display:none;position:fixed;top:0;left:0;bottom:0;z-index:100;width:240px;box-shadow:4px 0 24px rgba(0,0,0,.5)}.sidebar.mob{display:flex}
+  .cg{grid-template-columns:1fr}.sc-grid{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}.content{padding:14px}.topbar{padding:0 14px}
+  .risk-grid{grid-template-columns:1fr}.capex-grid{grid-template-columns:1fr}
+  .hamburger{display:flex!important}
+}
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:4px 8px;margin-right:4px;align-items:center}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+.mob-overlay.show{display:block}
+.panel{animation:fadeUp .22s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.kc{transition:all .18s ease}.kc:hover{transform:translateY(-2px);border-color:var(--border2);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+@media print{.sidebar,.topbar{display:none!important}.main{margin:0}.content{padding:10px}}
+.inv-highlight{background:linear-gradient(135deg,rgba(212,165,116,.08),rgba(143,168,87,.08));border:1px solid rgba(212,165,116,.2);border-radius:8px;padding:16px;margin-bottom:16px}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-badge">Frozen Viennoiserie</div>
+    <div class="logo-name">Croissant Import</div>
+    <div class="logo-sub">Финмодель · импорт в РК · v1</div>
+  </div>
+  <div class="nav">
+    <div class="nav-sec">Обзор</div>
+    <div class="nav-item active" onclick="sw('dashboard')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Дашборд</div>
+    <div class="nav-item" onclick="sw('assumptions')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M2 4h12v1.5H2zm0 3h8v1.5H2zm0 3h10v1.5H2z"/></svg>Допущения</div>
+    <div class="nav-sec">Финансы</div>
+    <div class="nav-item" onclick="sw('pl')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm1 3v1h8V5H4zm0 3v1h8V8H4zm0 3v1h5v-1H4z"/></svg>P&amp;L (помесячный)</div>
+    <div class="nav-item" onclick="sw('capex')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12v10H2zm1 2v7h10V5z"/><path d="M5 7h6v1H5zm0 2h4v1H5z"/></svg>CAPEX</div>
+    <div class="nav-item dds-nav" onclick="sw('dds')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.75 4v3.44l2.28 2.28-1.06 1.06L7.25 9V5h1.5z"/></svg>ДДС — ввод</div>
+    <div class="nav-item" onclick="sw('cashflow')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M1 11l4-4 3 3 4-5 3 2V13H1z"/></svg>ДДС таблица</div>
+    <div class="nav-sec">Управление</div>
+    <div class="nav-item" onclick="sw('hr')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-3 2.2-5 5-5s5 2 5 5"/><circle cx="12" cy="5" r="2"/><path d="M10 13c.2-1.5 1.2-2.5 2-2.5"/></svg>HR &amp; Персонал</div>
+    <div class="nav-item" onclick="sw('risks')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 14h14L8 1zm0 3l4.5 8h-9L8 4zm-.75 3v2.5h1.5V7h-1.5zm0 3.5v1.5h1.5v-1.5h-1.5z"/></svg>Матрица рисков</div>
+    <div class="nav-sec">Анализ</div>
+    <div class="nav-item" onclick="sw('metrics')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 2" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>NPV / IRR</div>
+    <div class="nav-item" onclick="sw('scenarios')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M2 12l3-6 3 4 2-3 4 5H2z"/></svg>Сценарии</div>
+    <div class="nav-item" onclick="sw('sensitivity')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M1 8h14M4 4l-3 4 3 4M12 4l3 4-3 4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>Чувствительность</div>
+    <div class="nav-item" onclick="sw('invest')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>Инвестиции</div>
+    <div class="nav-item" onclick="sw('roadmap')"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12M2 3v10M2 13h12" stroke="currentColor" stroke-width="1.2" fill="none"/><rect x="4" y="5" width="4" height="2" rx="1" fill="currentColor"/><rect x="6" y="8" width="5" height="2" rx="1" fill="currentColor"/><rect x="5" y="11" width="3" height="2" rx="1" fill="currentColor" opacity=".6"/></svg>Дорожная карта</div>
+  </div>
+  <div class="sb-foot">
+    <div style="margin-bottom:6px">Режим ДДС</div>
+    <div id="mode-pill" class="mode-pill auto" onclick="toggleMode()"><div class="mode-dot"></div><span id="mode-label">Авто</span></div>
+    <div style="margin-top:9px">Курс: <span style="color:var(--teal)" id="kurs-badge">580</span> тг/€</div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <button class="hamburger" onclick="toggleMob()">☰</button>
+    <div class="page-title" id="page-title">Дашборд</div>
+    <div class="sync-badge"><div class="sdot"></div>Синхронизировано</div>
+    <div class="topbar-right">
+      <div class="kpi-pill">IRR <b id="tb-irr">—</b></div>
+      <div class="kpi-pill">NPV <b id="tb-npv">—</b></div>
+    </div>
+  </div>
+  <div class="mob-overlay" id="mob-overlay" onclick="toggleMob()"></div>
+  <div class="content">
+    <div id="panel-dashboard" class="panel active">
+      <div class="ph"><h1>Ключевые показатели</h1><p>Импорт замороженной виеннуазери из Европы · Алматы &amp; Астана · горизонт 5 лет · 200→560 т/год</p></div>
+      <div class="dds-tb" style="margin-bottom:14px"><div class="tgg" id="dash-year-tabs"></div></div>
+      <div class="kpi-grid" id="kpi-grid"></div>
+      <div class="cg">
+        <div class="cb"><div class="ct">Выручка и EBITDA по годам, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--teal)"></span>Выручка</span><span><span class="lsq" style="background:var(--green)"></span>EBITDA</span></div><div class="cw"><canvas id="c-rev"></canvas></div></div>
+        <div class="cb"><div class="ct">Накопленный FCF, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--red)"></span>Отриц.</span><span><span class="lsq" style="background:var(--green)"></span>Полож.</span></div><div class="cw"><canvas id="c-cumfcf"></canvas></div></div>
+        <div class="cb"><div class="ct" id="opex-chart-title">Структура OPEX, млн тг</div><div class="leg" id="pie-leg"></div><div class="cw"><canvas id="c-pie"></canvas></div></div>
+        <div class="cb"><div class="ct">Себестоимость 1 кг, тг/кг</div><div class="leg"><span><span class="lsq" style="background:var(--gold)"></span>Перем.</span><span><span class="lsq" style="background:var(--teal)"></span>Пост.</span><span><span class="lsq" style="background:var(--muted)"></span>Аморт.</span></div><div class="cw"><canvas id="c-se"></canvas></div></div>
+      </div>
+    </div>
+
+    <div id="panel-assumptions" class="panel">
+      <div class="ph"><h1>Допущения</h1><p>Измените параметры и нажмите «Сохранить» для пересчёта всех разделов</p></div>
+      <div id="assumptions-form"></div>
+      <div style="text-align:center;margin-top:18px"><button class="save-btn" id="save-btn" onclick="saveAssumptions()">Сохранить допущения</button></div>
+    </div>
+
+    <div id="panel-pl" class="panel">
+      <div class="ph"><h1>P&amp;L — Помесячный отчёт</h1><p>Выручка → EBITDA → EBIT → КПН → Чистая прибыль (12 месяцев × 5 лет)</p></div>
+      <div class="dds-tb">
+        <div class="tgg" id="pl-year-tabs"></div>
+      </div>
+      <div class="tb" style="overflow-x:auto"><table id="pl-table"></table></div>
+      <div style="margin-top:14px"><div class="tb" style="overflow-x:auto"><table id="pl-annual-table"></table></div></div>
+    </div>
+
+    <div id="panel-capex" class="panel">
+      <div class="ph"><h1>Структура CAPEX</h1><p>Старт бизнеса: холодильный склад, рефрижераторы, брендинг и маркетинг-запуск, офис/ИТ</p></div>
+      <div id="capex-content"></div>
+    </div>
+
+    <div id="panel-dds" class="panel">
+      <div class="ph"><h1>ДДС — Ввод данных</h1><p>Введите фактические или прогнозные значения в млн тг. Пустые ячейки = авто-расчёт.</p></div>
+      <div class="dds-tb">
+        <div class="tgg"><button class="tgb active" id="btn-auto" onclick="setMode('auto')">Авто (из модели)</button><button class="tgb" id="btn-manual" onclick="setMode('manual')">Ручной ввод</button></div>
+        <button class="breset" onclick="resetDDS()">&#x21BA; Сбросить</button>
+        <div class="sync-badge"><div class="sdot"></div>NPV пересчитывается в реальном времени</div>
+      </div>
+      <div id="dds-note" class="dnote">Режим <strong>Авто</strong>: значения из Допущений.</div>
+      <div class="dds-tb" id="dds-year-tabs" style="margin-bottom:10px"></div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start">
+        <div class="tb" style="overflow-x:auto"><table class="dds-tbl" id="dds-table"></table></div>
+        <div class="tb" style="overflow-x:auto;min-width:200px"><table class="dds-tbl" id="dds-annual-table"></table></div>
+      </div>
+      <div class="cg" style="margin-top:14px">
+        <div class="cb"><div class="ct">FCF по годам + накопленный, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--teal)"></span>FCF</span><span><span class="lsq" style="background:var(--green)"></span>Накопл.</span></div><div class="cw"><canvas id="c-dds-fcf"></canvas></div></div>
+        <div class="cb"><div class="ct">Структура потоков 2028, млн тг</div><div class="cw"><canvas id="c-dds-struct"></canvas></div></div>
+      </div>
+    </div>
+
+    <div id="panel-cashflow" class="panel">
+      <div class="ph"><h1>ДДС — Полная таблица</h1><p>Движение денежных средств по всем категориям</p></div>
+      <div class="tb" style="overflow-x:auto"><table id="cf-table"></table></div>
+    </div>
+
+    <div id="panel-metrics" class="panel">
+      <div class="ph"><h1>Инвестиционные показатели</h1><p>NPV, IRR, срок окупаемости, PI, BEP</p></div>
+      <div class="kpi-grid" id="metrics-kpi"></div>
+      <div class="cb"><div class="ct">Формулы расчёта</div><div id="fl-list"></div></div>
+    </div>
+
+    <div id="panel-scenarios" class="panel">
+      <div class="ph"><h1>Сценарный анализ</h1><p>Стресс / Базовый / Оптимистичный</p></div>
+      <div class="sc-grid" id="sc-grid"></div>
+      <div class="cg">
+        <div class="cb"><div class="ct">EBITDA по сценариям, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--red)"></span>Стресс</span><span><span class="lsq" style="background:var(--teal)"></span>Базовый</span><span><span class="lsq" style="background:var(--green)"></span>Оптимист.</span></div><div class="cw tall"><canvas id="c-sc"></canvas></div></div>
+        <div class="cb"><div class="ct">NPV по сценариям, млн тг</div><div class="cw tall"><canvas id="c-sc-npv"></canvas></div></div>
+      </div>
+    </div>
+
+    <div id="panel-sensitivity" class="panel">
+      <div class="ph"><h1>Анализ чувствительности</h1><p>Влияние ±20% ключевых параметров на ЧП (год 3)</p></div>
+      <div class="cb" style="margin-bottom:14px"><div class="ct">Торнадо-диаграмма, ∆ ЧП, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--green)"></span>+20%</span><span><span class="lsq" style="background:var(--red)"></span>-20%</span></div><div class="cw tall"><canvas id="c-tornado"></canvas></div></div>
+      <div class="cg">
+        <div class="cb"><div class="ct">Точка безубыточности</div><div id="bep-content"></div></div>
+        <div class="cb"><div class="ct">Прибыль по загрузке, млн тг</div><div class="cw"><canvas id="c-bep"></canvas></div></div>
+      </div>
+    </div>
+
+    <div id="panel-hr" class="panel">
+      <div class="ph"><h1>HR &amp; Команда</h1><p>Команда импортёра · ФОТ влияет на P&L, ДДС и все метрики</p></div>
+      <div id="hr-content"></div>
+    </div>
+
+    <div id="panel-risks" class="panel">
+      <div class="ph"><h1>Матрица рисков</h1><p>12 ключевых рисков · P × I · Меры митигации</p></div>
+      <div id="risks-content"></div>
+    </div>
+
+    <div id="panel-invest" class="panel">
+      <div class="ph"><h1>Инвестиционный обзор</h1><p>Полная картина импортного бизнеса для инвестора: структура финансирования, доходность, график возврата</p></div>
+      <div id="invest-content"></div>
+    </div>
+
+    <div id="panel-roadmap" class="panel">
+      <div class="ph"><h1>Дорожная карта запуска</h1><p>От контракта с поставщиком до выхода на сети · ответственные · сроки</p></div>
+      <div id="roadmap-content"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   CORE ENGINE — Croissant Import v1 (architecture based on Sulvara Prospera financial model)
+   ═══════════════════════════════════════════ */
+const MLN=1e6,YRS=['2026','2027','2028','2029','2030'],MONTHS=['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+const charts={};let ddsMode='auto';let plYear=0;
+
+// === STAGED ASSUMPTIONS (save button pattern) ===
+// Импорт замороженной виеннуазери (круассаны, бриоши, pain au chocolat) из ЕС в РК.
+// `kurs` — в модели используется как EUR/KZT (имя переменной сохранено от оригинала для совместимости render-функций).
+// `mosh` — базовый годовой объём импорта в КГ; `load[i]` — множитель к базе по годам (рост продаж).
+// `ph2` — средняя отпускная цена, тг/кг (опт для сетей/HoReCa/собственных точек).
+// `psera_usd` — цена закупки у завода-производителя, €/кг (FCA Europe).
+// `pel` — стоимость фрахта до границы РК (рефрижератор), €/кг.
+// `pvoda` — логистика внутри РК (склад → полка), тг/кг.
+// `pteplo` — стоимость хранения, тг/кг.   `vteplo` — средний срок хранения, дней.
+// `rsera` — таможенная пошлина РК (ТН ВЭД 1905).  `rel` — НДС при ввозе (возвратный).  `rvoda` — потери по сроку годности.
+const A_DEFAULT={kurs:580,ikurs:0.05,wacc:0.20,inf:0.09,mosh:200000,load:[0.5,1.0,1.6,2.2,2.8],
+  ph2:2900,ih2:0.07,ph2_exp_usd:0,ih2_exp:0,psera_usd:3.2,isera:0.04,pel:0.38,iel:0.03,pvoda:45,pteplo:30,vteplo:30,
+  rsera:0.125,rel:0.12,rvoda:0.035,
+  capex_usd:0.18,capex_kzt:142,amort_spi:7,nrabot:0.115,
+  to:4,strah:3,adm:14,ecol:0,nimush:0,zeml:0,okhrana:6,kpn:0.20,
+  export_share:0};
+// A = committed (used by all calculations), S = staged (edited in UI, not yet saved)
+let A={...A_DEFAULT,load:[...A_DEFAULT.load]};
+let S={...A_DEFAULT,load:[...A_DEFAULT.load]};
+
+// === HR STATE (mutable, persisted) ===
+const HR_KEY='croissant_hr_v1';
+const HR_DEFAULT=[
+  {id:'b0',name:'Управление',color:'var(--teal)',staff:[
+    {id:'s00',role:'Директор / CEO',qty:1,salary:650000,hire:'Q3 2025',note:'Стратегия, ключевые клиенты'},
+    {id:'s01',role:'Финансовый директор',qty:1,salary:480000,hire:'Q4 2025',note:'Финмодель, банки, инвесторы'},
+  ]},
+  {id:'b1',name:'ВЭД и логистика',color:'#B89878',staff:[
+    {id:'s10',role:'Руководитель ВЭД',qty:1,salary:500000,hire:'Q3 2025',note:'Контракты EU, L/C, Incoterms'},
+    {id:'s11',role:'Менеджер по импорту',qty:1,salary:320000,hire:'Q4 2025',note:'Брокер, СТ-1, декларации'},
+    {id:'s12',role:'Логист (холодовая цепь)',qty:1,salary:280000,hire:'Q4 2025',note:'Рефрижератор, маршруты'},
+  ]},
+  {id:'b2',name:'Продажи и маркетинг',color:'var(--gold)',staff:[
+    {id:'s20',role:'Руководитель продаж',qty:1,salary:450000,hire:'Q4 2025',note:'Сети + HoReCa'},
+    {id:'s21',role:'KAM — сети',qty:2,salary:320000,hire:'Q1 2026',note:'Magnum, Small, Galmart'},
+    {id:'s22',role:'Менеджер HoReCa',qty:2,salary:280000,hire:'Q1 2026',note:'Кафе, пекарни, отели'},
+    {id:'s23',role:'Trade-маркетолог',qty:1,salary:260000,hire:'Q1 2026',note:'Промо, сэмплинг, POSM'},
+    {id:'s24',role:'SMM + контент',qty:1,salary:220000,hire:'Q1 2026',note:'Instagram, сайт, рецепты'},
+  ]},
+  {id:'b3',name:'Склад и развоз',color:'var(--green)',staff:[
+    {id:'s30',role:'Зав. складом',qty:1,salary:260000,hire:'Q4 2025',note:'Приёмка, WMS, остатки'},
+    {id:'s31',role:'Водитель рефрижератора',qty:2,salary:240000,hire:'Q1 2026',note:'2 фургона, −18°C'},
+    {id:'s32',role:'Комплектовщик',qty:2,salary:180000,hire:'Q1 2026',note:'Сборка заказов'},
+    {id:'s33',role:'Охранник склада (смены)',qty:2,salary:170000,hire:'Q1 2026',note:'Периметр + ворота'},
+  ]},
+  {id:'b4',name:'Финансы и бэк-офис',color:'#A67A4B',staff:[
+    {id:'s40',role:'Главный бухгалтер',qty:1,salary:350000,hire:'Q3 2025',note:'НК РК, МСФО, ВЭД'},
+    {id:'s41',role:'Бухгалтер (первичка)',qty:1,salary:220000,hire:'Q4 2025',note:'1С, счета'},
+    {id:'s42',role:'Юрист / офис-менеджер',qty:1,salary:240000,hire:'Q3 2025',note:'Договоры, комплаенс'},
+  ]},
+];
+let hrBlocks;
+function hrLoad(){try{const s=JSON.parse(localStorage.getItem(HR_KEY));if(s&&s.length)return s;}catch(e){}return JSON.parse(JSON.stringify(HR_DEFAULT));}
+function hrSave(){try{localStorage.setItem(HR_KEY,JSON.stringify(hrBlocks));}catch(e){}}
+hrBlocks=hrLoad();
+
+// Compute total FOT from HR state (used by cm())
+function hrTotalFot(){return hrBlocks.reduce((s,b)=>s+b.staff.reduce((ss,r)=>ss+r.salary*r.qty*12,0),0);}
+function hrTotalPeople(){return hrBlocks.reduce((s,b)=>s+b.staff.reduce((ss,r)=>ss+r.qty,0),0);}
+
+// DDS overrides
+const ROWS=[
+  {k:'receipts',l:'Поступления от реализации',h:'Выручка × 1.12 (НДС)',g:'op'},
+  {k:'suppliers',l:'Платежи поставщикам',h:'OPEX без ФОТ',g:'op'},
+  {k:'fot_pay',l:'Выплаты персоналу',h:'ФОТ с нагрузкой',g:'op'},
+  {k:'kpn_pay',l:'КПН уплаченный',h:'= P&L КПН',g:'op'},
+  {k:'other_op',l:'Прочие операционные',h:'Доп. потоки',g:'op'},
+  {k:'capex_fl',l:'CAPEX',h:'Инвестиции',g:'inv'},
+  {k:'wc',l:'Изменение NWC',h:'Рост = отток',g:'inv'},
+  {k:'fin_in',l:'Финансирование получено',h:'Кредиты, займы',g:'fin'},
+  // BUG13 NOTE: fin_out reduces cash flow but P&L assumes 100% equity (no interest deduction from tax base)
+  {k:'fin_out',l:'Финансирование выплачено',h:'Погашение · Примечание: P&L без % расходов (модель equity)',g:'fin'},
+];
+const ov={};ROWS.forEach(r=>{ov[r.k]=[null,null,null,null,null];});
+
+// === CORE CALCULATION ===
+// Семантика переменных в контексте импорта круассанов:
+//   ky  — курс EUR/KZT по годам
+//   ph2y — цена продажи, тг/кг (опт)
+//   psy — цена закупки, тг/кг (EUR × курс)
+//   pey — фрахт до границы, тг/кг
+//   vol — годовой импортный объём, кг
+//   vS  — затраты на закупку товара (аналог «сыры» в оригинале)
+//   vE  — фрахт + таможенная пошлина + брокер (аналог «э/э»)
+//   vW  — логистика РК + хранение + стоимость списаний (аналог «вода+хим»)
+//   rHt — 0 (без побочного потока)
+function cm(a){
+  const fot=hrTotalFot(); // ФОТ из HR-модуля
+  const ky=YRS.map((_,i)=>a.kurs*Math.pow(1+a.ikurs,i));
+  const capexM=a.capex_usd*a.kurs+a.capex_kzt;
+  const amort=capexM/a.amort_spi;
+  const vol=YRS.map((_,i)=>a.mosh*a.load[i]); // кг/год
+  const ph2y=YRS.map((_,i)=>a.ph2*Math.pow(1+a.ih2,i)); // тг/кг отпускная
+  const psy=YRS.map((_,i)=>a.psera_usd*ky[i]*Math.pow(1+a.isera,i)); // тг/кг закупка (EUR-номин.)
+  const pey=YRS.map((_,i)=>a.pel*ky[i]*Math.pow(1+a.iel,i));          // тг/кг фрахт (EUR-номин.)
+  // Выручка: проданный объём × цена продажи (списания не продаются)
+  const sold=YRS.map((_,i)=>vol[i]*(1-a.rvoda));
+  const rH2=YRS.map((_,i)=>sold[i]*ph2y[i]);
+  const rH2_dom=rH2, rH2_exp=YRS.map(()=>0), rHt=YRS.map(()=>0);
+  const rev=YRS.map((_,i)=>rH2[i]);
+  // Переменные: списанный товар тоже оплачен — берём valuation по полному vol, не sold
+  const vS=YRS.map((_,i)=>vol[i]*psy[i]);                            // закупка товара
+  const fobPerKg=YRS.map((_,i)=>psy[i]+pey[i]);                      // CIF-эквивалент
+  const vE=YRS.map((_,i)=>vol[i]*(pey[i]+fobPerKg[i]*a.rsera+fobPerKg[i]*0.015)); // фрахт + пошлина (от FOB) + 1.5% брокер
+  const vW=YRS.map((_,i)=>vol[i]*(a.pvoda*Math.pow(1+a.inf,i)+a.pteplo*(a.vteplo/30)*Math.pow(1+a.inf,i))); // РК-логи + хранение
+  const vT=YRS.map((_,i)=>vS[i]+vE[i]+vW[i]);
+  const fF=YRS.map((_,i)=>fot*(1+a.nrabot)*Math.pow(1+a.inf,i));
+  const fT=YRS.map((_,i)=>fF[i]+(a.to+a.strah+a.ecol+a.zeml)*MLN+a.adm*MLN*Math.pow(1+a.inf,i)+Math.max(Math.max(a.nimush*MLN*(1-0.05*i),0),0)+a.okhrana*MLN*Math.pow(1+a.inf,i));
+  const am=YRS.map(()=>amort*MLN);
+  const oc=YRS.map((_,i)=>vT[i]+fT[i]);
+  const eb=YRS.map((_,i)=>rev[i]-oc[i]);
+  const et=YRS.map((_,i)=>eb[i]-am[i]);
+  const kp=YRS.map((_,i)=>Math.max(et[i]*a.kpn,0));
+  const np=YRS.map((_,i)=>et[i]-kp[i]);
+  return{vol,rev,rH2,rH2_dom,rH2_exp,rHt,vS,vE,vW,vT,fF,fT,am,oc,eb,et,kp,np,ph2y,psy,pey,ky,capexM,amort,fot};
+}
+function autoFlows(m){
+  // BUG1 FIX: capex is already captured in f._c25 (year 2025), do not double-count in operating years
+  const capexDist=YRS.map(()=>0);
+  return{receipts:m.rev.map(v=>v*1.12/MLN),suppliers:m.oc.map((v,i)=>-(v-m.fF[i])/MLN),
+    fot_pay:m.fF.map(v=>-v/MLN),kpn_pay:m.kp.map(v=>-v/MLN),other_op:YRS.map(()=>0),
+    capex_fl:capexDist,wc:[0,-50,-80,-20,-20],fin_in:YRS.map(()=>0),fin_out:YRS.map(()=>0)};
+}
+function flows(){
+  const m=cm(A),au=autoFlows(m);const r={};
+  ROWS.forEach(row=>{r[row.k]=YRS.map((_,i)=>ddsMode==='manual'&&ov[row.k][i]!==null?ov[row.k][i]:au[row.k][i]);});
+  r._c25=-m.capexM;return r;
+}
+function fcfCalc(f){
+  const op=YRS.map((_,i)=>f.receipts[i]+f.suppliers[i]+f.fot_pay[i]+f.kpn_pay[i]+f.other_op[i]);
+  const iv=YRS.map((_,i)=>f.capex_fl[i]+f.wc[i]);
+  const fn=YRS.map((_,i)=>f.fin_in[i]+f.fin_out[i]);
+  const fcf=YRS.map((_,i)=>op[i]+iv[i]+fn[i]);
+  return{op,iv,fn,fcf,all:[f._c25,...fcf]};
+}
+// BUG12 FIX: added boundary guard to prevent r<=-1 (NaN in Math.pow) and multi-start fallback
+function irr(fl,g=0.5){
+  function _irr(start){
+    let r=start;
+    for(let i=0;i<1500;i++){
+      if(r<=-1)r=start*0.1;
+      const f=fl.reduce((s,v,t)=>s+v/Math.pow(1+r,t),0);
+      const d=fl.reduce((s,v,t)=>t===0?s:s-t*v/Math.pow(1+r,t+1),0);
+      if(Math.abs(d)<1e-14)break;
+      const n=r-f/d;
+      if(Math.abs(n-r)<1e-10){r=n;break;}
+      r=(isNaN(n)||n<=-1)?start:n;
+    }
+    return r;
+  }
+  const r1=_irr(g);
+  if(isFinite(r1)&&r1>-1)return r1;
+  // fallback: try different starting points
+  for(const s of [0.2,0.1,0.3,0.05]){const r2=_irr(s);if(isFinite(r2)&&r2>-1)return r2;}
+  return NaN;
+}
+function npvC(rate,fl){return fl.reduce((s,v,t)=>s+v/Math.pow(1+rate,t),0);}
+function fmt(n,d=0){if(isNaN(n)||n===null)return'—';return n.toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function fmtM(n){return fmt(Math.round(n/MLN),0)+' млн';}
+function fmtR(n){return fmt(Math.round(n),0);}
+function fmtP(n){if(isNaN(n)||n===null||n===undefined||!isFinite(n))return'—';return(n*100).toFixed(1)+'%';}
+function mkC(id,type,data,opts={}){
+  if(charts[id])charts[id].destroy();
+  const ctx=document.getElementById(id);if(!ctx)return;
+  const grid={color:'rgba(255,255,255,.06)'},tick={color:'#7A6850'};
+  charts[id]=new Chart(ctx,{type,data,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:tick,grid:grid},y:{ticks:tick,grid:grid}},...opts}});
+}
+function getMetrics(){
+  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);
+  const allTg=all.map(v=>v*MLN);
+  const NPV=npvC(A.wacc,allTg),IRR=irr(allTg),PI=1+NPV/(m.capexM*MLN);
+  // BUG2 FIX: payback was overstated by 1 year — use i (not i+1) as base years
+  let pp=null,cum=allTg[0];
+  fcf.forEach((v,i)=>{const prev=cum;cum+=v*MLN;if(cum>=0&&pp===null&&v*MLN!==0)pp=i+(-prev)/(v*MLN);});
+  return{NPV,IRR,PI,pp,capexM:m.capexM};
+}
+
+// === SAVE BUTTON ===
+function saveAssumptions(){
+  A={...S,load:[...S.load]};
+  const btn=document.getElementById('save-btn');
+  // BUG11 FIX: removed redundant textContent change; CSS ::after adds checkmark
+  btn.classList.add('saved');
+  renderAll();
+  setTimeout(()=>{btn.classList.remove('saved');},1800);
+}
+
+// === NAVIGATION ===
+function sw(id){
+  const tt={dashboard:'Дашборд',assumptions:'Допущения',pl:'P&L (помесячный)',capex:'CAPEX',dds:'ДДС — Ввод',cashflow:'ДДС — Таблица',metrics:'NPV / IRR',scenarios:'Сценарии',sensitivity:'Чувствительность',hr:'HR & Персонал',risks:'Матрица рисков',invest:'Инвестиции',roadmap:'Дорожная карта'};
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.getAttribute('onclick').includes("'"+id+"'")));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+id));
+  document.getElementById('page-title').textContent=tt[id]||id;
+  // Close mobile menu
+  document.querySelector('.sidebar').classList.remove('mob');
+  document.getElementById('mob-overlay').classList.remove('show');
+  renderAll();
+}
+function toggleMob(){
+  document.querySelector('.sidebar').classList.toggle('mob');
+  document.getElementById('mob-overlay').classList.toggle('show');
+}
+function setMode(m){
+  ddsMode=m;
+  document.getElementById('btn-auto').classList.toggle('active',m==='auto');
+  document.getElementById('btn-manual').classList.toggle('active',m==='manual');
+  document.getElementById('mode-pill').className='mode-pill '+m;
+  document.getElementById('mode-label').textContent=m==='auto'?'Авто':'Ручной';
+  document.getElementById('dds-note').innerHTML=m==='auto'?'Режим <strong>Авто</strong>: значения из Допущений.':'Режим <strong>Ручной</strong>: введите значения в млн тг. Пустое = авто.';
+  renderAll();
+}
+function toggleMode(){setMode(ddsMode==='auto'?'manual':'auto');}
+function resetDDS(){ROWS.forEach(r=>{ov[r.k]=[null,null,null,null,null];});Object.keys(ov).forEach(k=>{if(k.includes('_m_'))delete ov[k];});renderAll();}
+
+// === RENDER BAR ===
+function renderBar(){
+  try{const{NPV,IRR}=getMetrics();
+  document.getElementById('tb-irr').textContent=fmtP(IRR);
+  document.getElementById('tb-npv').textContent=(isNaN(NPV)||!isFinite(NPV))?'—':fmt(Math.round(NPV/MLN))+' млн';
+  document.getElementById('kurs-badge').textContent=A.kurs;
+  }catch(e){console.warn('renderBar:',e);}
+}
+
+// === DASHBOARD ===
+let dashYear=2; // default: index 2 = 2028
+function renderDashboard(){
+  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
+  const NPV=npvC(A.wacc,allTg),IRR=irr(allTg);
+  const yi=dashYear;const yr=YRS[yi];
+  // BUG5 FIX: BEP uses total revenue per ton (not just domestic H2SO4 price)
+  const revPerTon_d=m.rev[yi]/m.vol[yi];
+  const bepT=m.fT[yi]/(revPerTon_d-m.vT[yi]/m.vol[yi]);
+  // BUG2 FIX: payback off-by-one — use i instead of i+1
+  let pp=null,cum=allTg[0];
+  fcf.forEach((v,i)=>{const prev=cum;cum+=v*MLN;if(cum>=0&&pp===null&&v*MLN!==0)pp=i+(-prev)/(v*MLN);});
+
+  // Year tabs
+  document.getElementById('dash-year-tabs').innerHTML=YRS.map((y,i)=>`<button class="tgb${i===dashYear?' active':''}" onclick="dashYear=${i};renderDashboard()">${y}</button>`).join('');
+
+  const kpis=[
+    {l:'Объём '+yr,v:fmt(Math.round(m.vol[yi]/1000))+' т',s:fmt(Math.round(m.vol[yi]/1000))+' 000 кг/год',c:''},
+    {l:'Выручка ('+yr+')',v:fmtM(m.rev[yi]),s:'€'+fmt(Math.round(m.rev[yi]/m.ky[yi]/1000))+'K',c:''},
+    {l:'EBITDA ('+yr+')',v:fmtM(m.eb[yi]),s:fmtP(m.eb[yi]/m.rev[yi]),c:'g'},
+    {l:'Чистая прибыль ('+yr+')',v:fmtM(m.np[yi]),s:fmtP(m.np[yi]/m.rev[yi]),c:m.np[yi]>0?'g':'r'},
+    {l:'NPV',v:fmtM(NPV),s:'€'+fmt(Math.round(NPV/MLN/A.kurs*1000))+' тыс',c:NPV>0?'g':'r'},
+    {l:'IRR',v:fmtP(IRR),s:'vs WACC '+fmtP(A.wacc),c:IRR>A.wacc?'g':'r'},
+    {l:'Окупаемость',v:pp?pp.toFixed(1)+' лет':'—',s:'простой',c:''},
+    {l:'BEP ('+yr+')',v:isFinite(bepT)&&bepT>0?fmtP(bepT/A.mosh):'—',s:isFinite(bepT)&&bepT>0?'запас '+fmtP(1-bepT/A.mosh):'—',c:'a'},
+    {l:'CAPEX',v:fmt(Math.round(m.capexM))+' млн',s:'€'+fmt(Math.round(m.capexM/A.kurs*1000))+'K',c:'w'},
+    {l:'Команда',v:hrTotalPeople()+' чел',s:fmt(Math.round(m.fot/MLN))+' млн ФОТ',c:''},
+    {l:'Курс '+yr,v:fmt(Math.round(m.ky[yi]))+' тг/€',s:'девальв. '+fmtP(A.ikurs)+'/год',c:''},
+    {l:'Себестоимость ('+yr+')',v:m.vol[yi]>0?fmt(Math.round((m.oc[yi]+m.am[yi])/m.vol[yi])):'—',s:'тг/кг',c:'a'},
+  ];
+  document.getElementById('kpi-grid').innerHTML=kpis.map(({l,v,s,c})=>`<div class="kc ${c}"><div class="kc-label">${l}</div><div class="kc-val">${v}</div><div class="kc-sub">${s}</div></div>`).join('');
+
+  // Highlight selected year bar
+  mkC('c-rev','bar',{labels:YRS,datasets:[
+    {data:m.rev.map(v=>Math.round(v/MLN)),backgroundColor:YRS.map((_,i)=>i===yi?'rgba(212,165,116,1)':'rgba(212,165,116,.4)'),borderRadius:3},
+    {data:m.eb.map(v=>Math.round(v/MLN)),backgroundColor:YRS.map((_,i)=>i===yi?'rgba(143,168,87,1)':'rgba(143,168,87,.4)'),borderRadius:3}
+  ]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}}});
+  const cumA=[];let cs=all[0];fcf.forEach(v=>{cs+=v;cumA.push(Math.round(cs));});
+  mkC('c-cumfcf','bar',{labels:YRS,datasets:[{data:cumA,backgroundColor:cumA.map((v,i)=>{const base=v<0?'232,64,64':'29,184,122';return i===yi?`rgba(${base},1)`:`rgba(${base},.4)`;}),borderRadius:3}]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}}});
+
+  // OPEX pie for selected year
+  document.getElementById('opex-chart-title').textContent='Структура OPEX '+yr+', млн тг';
+  const pL=['Закупка','Фрахт+таможня','РК-логи+склад','ФОТ','Пост.(−ФОТ)','Аморт.'];
+  const pV=[Math.round(m.vS[yi]/MLN),Math.round(m.vE[yi]/MLN),Math.round((m.vT[yi]-m.vS[yi]-m.vE[yi])/MLN),Math.round(m.fF[yi]/MLN),Math.round((m.fT[yi]-m.fF[yi])/MLN),Math.round(m.am[yi]/MLN)].map(v=>Math.max(v,0));
+  const pC=['#E8C077','#D4A574','#8FA857','#B89878','#7A6850','#3B2D1C'];
+  document.getElementById('pie-leg').innerHTML=pL.map((l,i)=>`<span><span class="lsq" style="background:${pC[i]}"></span>${l}</span>`).join('');
+  mkC('c-pie','doughnut',{labels:pL,datasets:[{data:pV,backgroundColor:pC,borderWidth:0}]},{cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw+' млн'}}}});
+  const sV=YRS.map((_,i)=>Math.round(m.vT[i]/m.vol[i])),sF=YRS.map((_,i)=>Math.round(m.fT[i]/m.vol[i])),sA=YRS.map((_,i)=>Math.round(m.am[i]/m.vol[i]));
+  mkC('c-se','bar',{labels:YRS,datasets:[{data:sV,backgroundColor:YRS.map((_,i)=>i===yi?'rgba(232,192,119,1)':'rgba(232,192,119,.4)'),stack:'s'},{data:sF,backgroundColor:YRS.map((_,i)=>i===yi?'rgba(212,165,116,1)':'rgba(212,165,116,.4)'),stack:'s'},{data:sA,backgroundColor:YRS.map((_,i)=>i===yi?'rgba(74,98,128,1)':'rgba(74,98,128,.4)'),stack:'s'}]},{scales:{x:{stacked:true,ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{stacked:true,ticks:{color:'#7A6850',callback:v=>v+' тг'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+}
+
+// === ASSUMPTIONS (staged, save button) ===
+function buildInputs(){
+  function sl(l,key,prop,min,max,step,suf,isArr,idx){
+    const v=isArr?S[key][idx]:S[key];
+    const setter=isArr?`S['${key}'][${idx}]=+this.value`:`S['${key}']=+this.value`;
+    return`<div class="field"><label>${l}</label><div class="frow"><input type="range" min="${min}" max="${max}" step="${step}" value="${v}" oninput="${setter};this.nextElementSibling.textContent=this.value+'${suf}'"><span class="fval">${v}${suf}</span></div></div>`;
+  }
+  const h=`
+  <div class="isec"><h3>Макроэкономика</h3><div class="igrid">
+    ${sl('Курс EUR/тг','kurs','',400,900,10,' тг/€')}
+    ${sl('Девальвация %/год','ikurs','',0,15,1,'%')}
+    ${sl('WACC %','wacc','',10,35,1,'%')}
+    ${sl('Инфляция РК %','inf','',3,18,1,'%')}
+  </div></div>
+  <div class="isec"><h3>Объём импорта и рост</h3><div class="igrid">
+    ${sl('База объёма, кг/год','mosh','',50000,500000,10000,' кг')}
+    ${sl('Рост 2026 (×базы)','load','',30,150,10,'%',true,0)}
+    ${sl('Рост 2027 (×базы)','load','',50,250,10,'%',true,1)}
+    ${sl('Рост 2028+ (×базы)','load','',100,400,10,'%',true,2)}
+  </div></div>
+  <div class="isec"><h3>Цены и маржа</h3><div class="igrid">
+    ${sl('Цена продажи, тг/кг','ph2','',1500,5000,100,' тг')}
+    ${sl('Индекс цены продажи %/год','ih2','',0,15,1,'%')}
+    ${sl('Цена закупки, €/кг','psera_usd','',1.5,6,0.1,' €')}
+    ${sl('Индекс цены закупки %/год','isera','',0,10,1,'%')}
+    ${sl('Фрахт до РК, €/кг','pel','',0.15,1,0.05,' €')}
+    ${sl('Потери по сроку %','rvoda','',0,15,1,'%')}
+  </div></div>
+  <div class="isec"><h3>Таможня и логистика РК</h3><div class="igrid">
+    ${sl('Пошлина % от FOB','rsera','',0,30,1,'%')}
+    ${sl('НДС ввозной %','rel','',0,20,1,'%')}
+    ${sl('Логистика РК, тг/кг','pvoda','',20,120,5,' тг')}
+    ${sl('Хранение, тг/кг/мес','pteplo','',10,80,5,' тг')}
+    ${sl('Средний срок хранения, дн','vteplo','',10,90,5,' дн')}
+  </div></div>
+  <div class="isec"><h3>CAPEX — Запуск бизнеса</h3><div class="igrid">
+    ${sl('Рефрижер. фургоны, €тыс','capex_usd','',0.05,0.5,0.01,' €М')}
+    ${sl('Склад+бренд+офис, млн тг','capex_kzt','',50,500,10,' млн')}
+    ${sl('СПИ лет','amort_spi','',5,10,1,' лет')}
+  </div></div>
+  <div class="isec"><h3>Прочие затраты</h3><div class="igrid">
+    ${sl('КПН %','kpn','',10,30,1,'%')}
+  </div></div>`;
+  document.getElementById('assumptions-form').innerHTML=h;
+  // Fix percentage sliders (ikurs, wacc, inf, load, export_share, ih2, kpn stored as decimals)
+  document.querySelectorAll('#assumptions-form input[type=range]').forEach(inp=>{
+    const oninp=inp.getAttribute('oninput');
+    if(!oninp)return;
+    // Detect percentage fields
+    const pctFields=['ikurs','wacc','inf','ih2','isera','iel','kpn','rsera','rel','rvoda'];
+    const loadMatch=oninp.match(/S\['load'\]\[(\d)\]/);
+    const fieldMatch=oninp.match(/S\['(\w+)'\]/);
+    if(loadMatch){
+      const idx=+loadMatch[1];
+      const curVal=Math.round(S.load[idx]*100);
+      inp.value=curVal;inp.nextElementSibling.textContent=curVal+'%';
+      inp.setAttribute('oninput',`S.load[${idx}]=+this.value/100;if(${idx}===2){S.load[3]=S.load[4]=+this.value/100;}this.nextElementSibling.textContent=this.value+'%'`);
+    } else if(fieldMatch && pctFields.includes(fieldMatch[1])){
+      const key=fieldMatch[1];
+      const curVal=Math.round(S[key]*100);
+      inp.value=curVal;inp.nextElementSibling.textContent=curVal+'%';
+      inp.setAttribute('oninput',`S['${key}']=+this.value/100;this.nextElementSibling.textContent=this.value+'%'`);
+    }
+  });
+}
+
+// === MONTHLY P&L ===
+function renderPL(){
+  const m=cm(A);
+  // Year tabs
+  document.getElementById('pl-year-tabs').innerHTML=YRS.map((y,i)=>`<button class="tgb${i===plYear?' active':''}" onclick="plYear=${i};renderPL()">${y}</button>`).join('');
+  const yi=plYear;
+  // BUG4 FIX: monthly values must sum to annual values — divide by rampSum not 12
+  const ramp=yi===0?[0.3,0.4,0.5,0.6,0.7,0.8,0.85,0.9,0.95,1,1,1]:MONTHS.map(()=>1);
+  const rampSum=ramp.reduce((s,v)=>s+v,0);
+  // Variable values: divide annual by rampSum so monthly rows sum to annual total
+  const vol_m=m.vol[yi]/rampSum, rev_m=m.rev[yi]/rampSum, vT_m=m.vT[yi]/rampSum;
+  // Fixed values: divide by 12 (uniform across months regardless of ramp)
+  const fT_m=m.fT[yi]/12, am_m=m.am[yi]/12;
+  const eb_m=rev_m-vT_m-fT_m, et_m=eb_m-am_m, kp_m=Math.max(et_m*A.kpn,0), np_m=et_m-kp_m;
+  const rows=[
+    {l:'Объём, т',v:ramp.map(r=>vol_m*r),f:v=>fmt(Math.round(v))},
+    {l:'Выручка',v:ramp.map(r=>rev_m*r),f:v=>fmtR(Math.round(v/1000))+'K',c:''},
+    {l:'Перем. затраты',v:ramp.map(r=>-vT_m*r),f:v=>fmtR(Math.round(v/1000))+'K',c:''},
+    {l:'Пост. затраты',v:MONTHS.map(()=>-fT_m),f:v=>fmtR(Math.round(v/1000))+'K',c:''},
+    {l:'EBITDA',v:ramp.map(r=>rev_m*r-vT_m*r-fT_m),f:v=>fmtR(Math.round(v/1000))+'K',c:'tot'},
+    {l:'Амортизация',v:MONTHS.map(()=>-am_m),f:v=>fmtR(Math.round(v/1000))+'K',c:''},
+    {l:'EBIT',v:ramp.map(r=>(rev_m*r-vT_m*r-fT_m)-am_m),f:v=>fmtR(Math.round(v/1000))+'K',c:'tot'},
+    {l:'КПН',v:ramp.map(r=>-Math.max(((rev_m*r-vT_m*r-fT_m)-am_m)*A.kpn,0)),f:v=>fmtR(Math.round(v/1000))+'K',c:''},
+    {l:'Чистая прибыль',v:ramp.map(r=>{const ebit=(rev_m*r-vT_m*r-fT_m)-am_m;return ebit-Math.max(ebit*A.kpn,0);}),f:v=>fmtR(Math.round(v/1000))+'K',c:'tot'},
+  ];
+  let html=`<tr><th>Статья</th>${MONTHS.map(mo=>`<th>${mo}</th>`).join('')}<th>Год ${YRS[yi]}</th></tr>`;
+  rows.forEach(r=>{
+    const total=r.v.reduce((s,v)=>s+v,0);
+    html+=`<tr class="${r.c||''}"><td>${r.l}</td>${r.v.map(v=>`<td class="${v<-1?'neg':v>1?'pos':''}">${r.f(v)}</td>`).join('')}<td class="${total<-1?'neg':'pos'}" style="font-weight:500">${r.f(total)}</td></tr>`;
+  });
+  document.getElementById('pl-table').innerHTML=html;
+  // Annual summary
+  const aRows=[
+    {l:'Выручка',v:m.rev,c:''},{l:'EBITDA',v:m.eb,c:'tot'},{l:'EBITDA %',v:m.eb.map((_,i)=>m.eb[i]/m.rev[i]),c:'hi',pct:true},
+    {l:'EBIT',v:m.et,c:'tot'},{l:'КПН',v:m.kp.map(x=>-x),c:''},{l:'Чистая прибыль',v:m.np,c:'tot'},
+    {l:'Рентабельность',v:m.np.map((_,i)=>m.np[i]/m.rev[i]),c:'hi',pct:true},
+  ];
+  document.getElementById('pl-annual-table').innerHTML=
+    `<tr><th>Годовая сводка</th>${YRS.map(y=>`<th>${y}</th>`).join('')}<th>Итого</th></tr>`+
+    aRows.map(r=>{
+      const cells=r.pct?YRS.map((_,i)=>`<td>${fmtP(r.v[i])}</td>`).join(''):YRS.map((_,i)=>`<td class="${r.v[i]<-1?'neg':r.v[i]>1?'pos':''}">${fmtM(r.v[i])}</td>`).join('');
+      const tot=r.pct?'<td>—</td>':`<td class="${r.v.reduce((s,v)=>s+v,0)<0?'neg':'pos'}">${fmtM(r.v.reduce((s,v)=>s+v,0))}</td>`;
+      return`<tr class="${r.c}"><td>${r.l}</td>${cells}${tot}</tr>`;
+    }).join('');
+}
+
+// === CAPEX ===
+function renderCapex(){
+  const m=cm(A);
+  // EUR-часть: рефрижераторные фургоны и оборудование холодовой цепи
+  // KZT-часть: холодильный склад, брендинг, маркетинг, офис, ИТ
+  const euAmt=A.capex_usd*A.kurs;const kzAmt=A.capex_kzt;const total=m.capexM;
+  const euPct=(euAmt/total*100).toFixed(0);const kzPct=(kzAmt/total*100).toFixed(0);
+  const euItems=[
+    ['2 рефрижераторных фургона (Mercedes/Iveco)',70],
+    ['Растаможка + регистрация + страхование',15],
+    ['Оборудование холодовой цепи (−18°C)',10],
+    ['Брендирование транспорта',5],
+  ];
+  const kzItems=[
+    ['Холодильный склад — депозит (3 мес)',18],
+    ['Холодильные стеллажи + монтаж',20],
+    ['Системы мониторинга температуры',6],
+    ['Брендинг + фирстиль + сайт',14],
+    ['Маркетинг-запуск (PR, сэмплинг сетям)',16],
+    ['Офис + мебель + ИТ',10],
+    ['1С + CRM + ПО учёта',6],
+    ['Юридические + регистрация ТОО',5],
+    ['Резерв на непредвиденное',5],
+  ];
+  let html=`<div class="kpi-grid" style="margin-bottom:18px">
+    <div class="kc w"><div class="kc-label">CAPEX итого</div><div class="kc-val">${fmt(Math.round(total))} млн</div><div class="kc-sub">€${fmt(Math.round(total/A.kurs*1000))} тыс</div></div>
+    <div class="kc" style="--ac:var(--teal)"><div class="kc-label">Холодовая логистика (EU)</div><div class="kc-val">${fmt(Math.round(euAmt))} млн</div><div class="kc-sub">${euPct}% · €${fmt(A.capex_usd*1000)}K</div></div>
+    <div class="kc" style="--ac:var(--gold)"><div class="kc-label">Склад + бренд + офис</div><div class="kc-val">${fmt(Math.round(kzAmt))} млн</div><div class="kc-sub">${kzPct}%</div></div>
+    <div class="kc a"><div class="kc-label">Амортизация</div><div class="kc-val">${fmt(Math.round(m.amort))} млн/год</div><div class="kc-sub">СПИ ${A.amort_spi} лет</div></div>
+  </div>`;
+  html+=`<div class="capex-grid">
+    <div class="capex-card" style="--cc:var(--teal)"><h3 style="color:var(--teal)">🚚 Холодовая логистика (EU) · €${fmt(A.capex_usd,2)}М</h3>
+    ${euItems.map(([n,p])=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="color:var(--text2)">${n}</span><span style="font-family:var(--mono);color:var(--text)">${fmt(Math.round(euAmt*p/100))} млн <span style="color:var(--text3)">(${p}%)</span></span></div>`).join('')}
+    </div>
+    <div class="capex-card" style="--cc:var(--gold)"><h3 style="color:var(--gold)">🥐 Склад + бренд + офис (РК) · ${fmt(Math.round(kzAmt))} млн тг</h3>
+    ${kzItems.map(([n,p])=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="color:var(--text2)">${n}</span><span style="font-family:var(--mono);color:var(--text)">${fmt(Math.round(kzAmt*p/100))} млн <span style="color:var(--text3)">(${p}%)</span></span></div>`).join('')}
+    </div>
+  </div>`;
+  html+=`<div class="cb"><div class="ct">Структура CAPEX</div><div class="cw"><canvas id="c-capex"></canvas></div></div>`;
+  document.getElementById('capex-content').innerHTML=html;
+  setTimeout(()=>{
+    mkC('c-capex','doughnut',{labels:['Холодовая логистика (EU)','Склад+бренд+офис'],datasets:[{data:[Math.round(euAmt),Math.round(kzAmt)],backgroundColor:['rgba(212,165,116,.85)','rgba(232,192,119,.85)'],borderWidth:0}]},{cutout:'60%',plugins:{legend:{display:false}}});
+  },50);
+}
+
+// === DDS ===
+let ddsYear=0;
+function renderDDS(){
+  const m=cm(A),au=autoFlows(m);const f=flows();const{op,iv,fn,fcf,all}=fcfCalc(f);const isM=ddsMode==='manual';
+  const yi=ddsYear;const yr=YRS[yi];
+  const ramp=yi===0?[0.3,0.4,0.5,0.6,0.7,0.8,0.85,0.9,0.95,1,1,1]:MONTHS.map(()=>1);
+  const rampSum=ramp.reduce((s,v)=>s+v,0);
+
+  // Year tabs
+  const tabsEl=document.getElementById('dds-year-tabs');
+  if(tabsEl)tabsEl.innerHTML='<div class="tgg">'+YRS.map((y,i)=>`<button class="tgb${i===ddsYear?' active':''}" onclick="ddsYear=${i};renderDDS()">${y}</button>`).join('')+'</div>';
+
+  const groups=[{id:'op',l:'I. Операционная'},{id:'inv',l:'II. Инвестиционная'},{id:'fin',l:'III. Финансовая'}];
+  const monthTot={op:MONTHS.map(()=>0),inv:MONTHS.map(()=>0),fin:MONTHS.map(()=>0)};
+
+  let html=`<tr><th style="min-width:140px">Статья ДДС · ${yr}</th>${MONTHS.map(mo=>`<th>${mo}</th>`).join('')}<th style="font-weight:700">Год</th></tr>`;
+
+  groups.forEach(g=>{
+    html+=`<tr class="dsec"><td colspan="${MONTHS.length+2}">${g.l}</td></tr>`;
+    ROWS.filter(r=>r.g===g.id).forEach(r=>{
+      const yearVal=f[r.k][yi];
+      const monthVals=MONTHS.map((_,mi)=>yearVal*ramp[mi]/rampSum);
+      monthVals.forEach((v,mi)=>monthTot[g.id][mi]+=v);
+      const rowTotal=monthVals.reduce((s,v)=>s+v,0);
+      html+=`<tr><td><span>${r.l}</span><span class="hint">${r.h}</span></td>`;
+      MONTHS.forEach((_,mi)=>{
+        const v=monthVals[mi];
+        const monthKey=r.k+'_m_'+yi+'_'+mi;
+        const ho=isM&&ov[monthKey]!==undefined&&ov[monthKey]!==null;
+        if(!isM){html+=`<td><span class="cv ${v<-.01?'neg':v>.01?'pos':''}">${fmtR(Math.round(v))}</span></td>`;}
+        else{html+=`<td><input class="ni${ho?' ov':''}" type="number" step="any" style="width:65px" placeholder="${fmtR(Math.round(v))}" value="${ho?fmtR(ov[monthKey]):''}" oninput="ov['${monthKey}']=this.value===''?null:parseFloat(this.value);this.classList.toggle('ov',this.value!=='');renderDDS()"></td>`;}
+      });
+      html+=`<td class="cv ${rowTotal<-.01?'neg':rowTotal>.01?'pos':''}" style="font-weight:500">${fmtR(Math.round(rowTotal))}</td></tr>`;
+    });
+    const gTotal=monthTot[g.id].reduce((s,v)=>s+v,0);
+    html+=`<tr class="dtot"><td>Итого ${g.l.split('.')[1].trim()}</td>`;
+    MONTHS.forEach((_,mi)=>{const v=monthTot[g.id][mi];html+=`<td class="cv ${v<-.01?'neg':v>.01?'pos':''}">${fmtR(Math.round(v))}</td>`;});
+    html+=`<td class="cv ${gTotal<-.01?'neg':gTotal>.01?'pos':''}" style="font-weight:500">${fmtR(Math.round(gTotal))}</td></tr>`;
+  });
+
+  const mFcf=MONTHS.map((_,mi)=>monthTot.op[mi]+monthTot.inv[mi]+monthTot.fin[mi]);
+  const mFcfTotal=mFcf.reduce((s,v)=>s+v,0);
+  html+=`<tr class="dfcf"><td>&#9658;&#9658; FCF</td>`;
+  MONTHS.forEach((_,mi)=>{html+=`<td class="cv ${mFcf[mi]<-.01?'neg':mFcf[mi]>.01?'pos':''}" style="font-weight:500">${fmtR(Math.round(mFcf[mi]))}</td>`;});
+  html+=`<td class="cv ${mFcfTotal<-.01?'neg':mFcfTotal>.01?'pos':''}" style="font-size:13px;font-weight:600">${fmtR(Math.round(mFcfTotal))}</td></tr>`;
+
+  let cumM=all[0];for(let y=0;y<yi;y++)cumM+=fcf[y];
+  html+=`<tr class="dcum"><td style="color:var(--text2)">Накопл. FCF</td>`;
+  MONTHS.forEach((_,mi)=>{cumM+=mFcf[mi];html+=`<td class="cv ${cumM<-.01?'neg':cumM>.01?'pos':''}">${fmtR(Math.round(cumM))}</td>`;});
+  html+=`<td></td></tr>`;
+  document.getElementById('dds-table').innerHTML=html;
+
+  // Annual summary
+  const annEl=document.getElementById('dds-annual-table');
+  if(annEl){
+    const tot2={op:YRS.map(()=>0),inv:YRS.map(()=>0),fin:YRS.map(()=>0)};
+    ROWS.forEach(r=>{f[r.k].forEach((v,i)=>tot2[r.g][i]+=v);});
+    let aH=`<tr><th>Годовые</th>${YRS.map(y=>`<th>${y}</th>`).join('')}</tr>`;
+    [['Операц.',tot2.op],['Инвест.',tot2.inv],['Финанс.',tot2.fin]].forEach(([l,v])=>{
+      aH+=`<tr><td style="color:var(--text2);font-size:11px">${l}</td>`;
+      v.forEach(val=>aH+=`<td class="cv ${val<-.01?'neg':val>.01?'pos':''}">${fmtR(Math.round(val))}</td>`);aH+=`</tr>`;});
+    aH+=`<tr class="dfcf"><td style="font-size:11px">FCF</td>`;
+    fcf.forEach(v=>aH+=`<td class="cv ${v<-.01?'neg':v>.01?'pos':''}" style="font-weight:500">${fmtR(Math.round(v))}</td>`);aH+=`</tr>`;
+    let cs2=all[0];aH+=`<tr class="dcum"><td style="font-size:11px">Накопл.</td>`;
+    fcf.forEach(v=>{cs2+=v;aH+=`<td class="cv ${cs2<-.01?'neg':cs2>.01?'pos':''}">${fmtR(Math.round(cs2))}</td>`;});aH+=`</tr>`;
+    annEl.innerHTML=aH;
+  }
+
+  mkC('c-dds-fcf','bar',{labels:YRS,datasets:[
+    {type:'bar',data:fcf.map(v=>Math.round(v)),backgroundColor:fcf.map(v=>v<0?'rgba(200,90,62,.8)':'rgba(212,165,116,.8)'),borderRadius:3,order:2},
+    {type:'line',data:(()=>{let c=all[0];return fcf.map(v=>{c+=v;return Math.round(c);})})(),borderColor:'#8FA857',backgroundColor:'rgba(143,168,87,.12)',fill:true,pointBackgroundColor:'#8FA857',pointRadius:4,order:1},
+  ]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+  const s28=[op[2],iv[2],fn[2]];
+  mkC('c-dds-struct','bar',{labels:['Операц.','Инвест.','Финанс.'],datasets:[{data:s28.map(v=>Math.round(v)),backgroundColor:s28.map(v=>v>=0?'rgba(143,168,87,.8)':'rgba(200,90,62,.8)'),borderRadius:4}]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+}
+
+function renderCFTable(){
+  const m=cm(A);const f=flows();const{op,iv,fn,fcf,all}=fcfCalc(f);
+  const cumA=[];let cs=all[0];fcf.forEach(v=>{cs+=v;cumA.push(cs);});const aYrs=['2025',...YRS];
+  const rows=[
+    {l:'I. Операционный',v:null,c:'sh'},{l:'Поступления',v:[0,...f.receipts],c:''},{l:'Платежи поставщикам',v:[0,...f.suppliers],c:''},
+    {l:'Выплаты персоналу',v:[0,...f.fot_pay],c:''},{l:'КПН',v:[0,...f.kpn_pay],c:''},{l:'Прочие',v:[0,...f.other_op],c:''},
+    {l:'&#9658; Итого операц.',v:[0,...op],c:'tot'},
+    {l:'II. Инвестиционный',v:null,c:'sh'},{l:'CAPEX',v:[f._c25,...f.capex_fl],c:''},{l:'NWC',v:[0,...f.wc],c:''},
+    {l:'&#9658; Итого инвест.',v:[f._c25,...iv],c:'tot'},
+    {l:'III. Финансовый',v:null,c:'sh'},{l:'Получено',v:[0,...f.fin_in],c:''},{l:'Выплачено',v:[0,...f.fin_out],c:''},
+    {l:'&#9658; Итого фин.',v:[0,...fn],c:'tot'},
+    {l:'&#9658;&#9658; FCF',v:[all[0],...fcf],c:'tot'},{l:'Накопл. FCF',v:[all[0],...cumA],c:'hi'},
+  ];
+  document.getElementById('cf-table').innerHTML=
+    `<tr><th>Статья</th>${aYrs.map(y=>`<th>${y}</th>`).join('')}</tr>`+
+    rows.map(r=>r.v===null?`<tr class="sh"><td colspan="${aYrs.length+1}">${r.l}</td></tr>`
+      :`<tr class="${r.c}"><td>${r.l}</td>${r.v.map(v=>`<td class="${v<-.01?'neg':v>.01?'pos':''}">${fmtR(Math.round(v))} млн</td>`).join('')}</tr>`).join('');
+}
+
+// === METRICS ===
+function renderMetrics(){
+  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
+  const NPV=npvC(A.wacc,allTg),IRR=irr(allTg),PI=1+NPV/(m.capexM*MLN);
+  // BUG2 FIX: payback off-by-one
+  let pp=null,cum=allTg[0];
+  fcf.forEach((v,i)=>{const prev=cum;cum+=v*MLN;if(cum>=0&&pp===null&&v*MLN!==0)pp=i+(-prev)/(v*MLN);});
+  // BUG5 FIX: BEP uses total revenue per ton
+  const revPerTon_m=m.rev[2]/m.vol[2];
+  const bepT=m.fT[2]/(revPerTon_m-m.vT[2]/m.vol[2]);const cmT=revPerTon_m-m.vT[2]/m.vol[2];
+  const kpis=[
+    {l:'NPV (WACC '+fmtP(A.wacc)+')',v:fmtM(NPV),s:'€'+fmt(Math.round(NPV/MLN/A.kurs*1000))+' тыс',c:NPV>0?'g':'r'},
+    {l:'IRR',v:fmtP(IRR),s:'в '+fmt(IRR/A.wacc,1)+'x WACC',c:IRR>A.wacc?'g':'r'},
+    {l:'PI',v:PI.toFixed(2)+'×',s:'1 + NPV/CAPEX',c:PI>1?'g':'r'},
+    {l:'Окупаемость',v:pp?pp.toFixed(1)+' лет':'—',s:'простой',c:''},
+    {l:'CAPEX',v:fmt(Math.round(m.capexM))+' млн',s:'EU €'+fmt(Math.round(A.capex_usd*1000))+'K + РК '+fmt(Math.round(A.capex_kzt))+' млн',c:'w'},
+    {l:'BEP кг/год',v:fmt(Math.round(bepT)),s:'мин. безубыточности',c:'a'},
+    {l:'BEP %',v:fmtP(bepT/A.mosh),s:'запас '+fmtP(1-bepT/A.mosh),c:'a'},
+    {l:'CM/кг',v:fmt(Math.round(cmT)),s:'тг/кг',c:''},
+  ];
+  document.getElementById('metrics-kpi').innerHTML=kpis.map(({l,v,s,c})=>`<div class="kc ${c}"><div class="kc-label">${l}</div><div class="kc-val" style="font-size:17px">${v}</div><div class="kc-sub">${s}</div></div>`).join('');
+  document.getElementById('fl-list').innerHTML=[
+    ['NPV','Σ FCF_t/(1+WACC)^t',fmtM(NPV),'g'],['IRR','r: Σ FCF_t/(1+r)^t=0',fmtP(IRR),'g'],
+    ['PP','Год Σ FCF≥0',pp?pp.toFixed(1)+' лет':'—',''],['PI','1+NPV/CAPEX',PI.toFixed(2)+'×','g'],
+    ['EBITDA','Выр−OPEX',fmtM(m.eb[2]),'g'],['BEP','FC/(P−VC/кг)',fmt(Math.round(bepT))+' кг','a'],
+  ].map(([n,fo,v,c])=>`<div class="fl-row"><div class="fl-name">${n}</div><div class="fl-formula">${fo}</div><div class="fl-val" style="color:var(--${c==='g'?'green':c==='a'?'gold':'text'})">${v}</div></div>`).join('');
+}
+
+// === SCENARIOS ===
+function renderScenarios(){
+  function sc(pm,loadOv,sm,em){
+    const a={...A,ph2:A.ph2*pm,psera_usd:A.psera_usd*sm,pel:A.pel*em,load:[...loadOv]};
+    const m=cm(a);const au=autoFlows(m);
+    const op2=YRS.map((_,i)=>au.receipts[i]+au.suppliers[i]+au.fot_pay[i]+au.kpn_pay[i]);
+    const fcf2=op2.map((_,i)=>op2[i]+au.wc[i]);const allT=[-m.capexM,...fcf2].map(v=>v*MLN);
+    // BUG2 FIX: payback off-by-one
+    let pp=null,cu=-m.capexM*MLN;
+    fcf2.forEach((v,i)=>{const prev=cu;cu+=v*MLN;if(cu>=0&&pp===null&&v*MLN!==0)pp=i+(-prev)/(v*MLN);});
+    return{m,NPV:npvC(A.wacc,allT),IRR:irr(allT),pp};
+  }
+  const stress=sc(.8,[A.load[0]*.7,A.load[1]*.8,.8,.8,.8],1.2,1.15);
+  const base=sc(1,[...A.load],1,1);
+  const opt=sc(1.1,[A.load[0],A.load[1],1,1,1],.9,.95);
+  const scs=[
+    {d:stress,name:'Стресс',sub:'Цена −20% · рост −20% · закупка +20% · фрахт +15%',c:'#C85A3E'},
+    {d:base,name:'Базовый',sub:'Все параметры из допущений',c:'#D4A574'},
+    {d:opt,name:'Оптимист.',sub:'Цена +10% · закупка −10% · фрахт −5%',c:'#8FA857'},
+  ];
+  document.getElementById('sc-grid').innerHTML=scs.map(({d,name,sub,c})=>`<div class="sc-card" style="--sc-c:${c}"><div class="sc-name">${name}</div><div class="sc-sub">${sub}</div>
+    ${[['Выручка',fmtM(d.m.rev[2])],['EBITDA',fmtM(d.m.eb[2])],['EBITDA%',fmtP(d.m.eb[2]/d.m.rev[2])],['NPV',fmtM(d.NPV)],['IRR',fmtP(d.IRR)],['PP',d.pp?d.pp.toFixed(1)+' лет':'—']].map(([k,v])=>`<div class="sc-row"><span class="sc-key">${k}</span><span class="sc-val">${v}</span></div>`).join('')}</div>`).join('');
+  mkC('c-sc','bar',{labels:YRS,datasets:[
+    {label:'Стресс',data:stress.m.eb.map(v=>Math.round(v/MLN)),backgroundColor:'rgba(200,90,62,.8)',borderRadius:3},
+    {label:'Базовый',data:base.m.eb.map(v=>Math.round(v/MLN)),backgroundColor:'rgba(212,165,116,.8)',borderRadius:3},
+    {label:'Оптимист.',data:opt.m.eb.map(v=>Math.round(v/MLN)),backgroundColor:'rgba(143,168,87,.8)',borderRadius:3},
+  ]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+  mkC('c-sc-npv','bar',{labels:['Стресс','Базовый','Оптимист.'],datasets:[{data:[stress,base,opt].map(s=>Math.round(s.NPV/MLN)),backgroundColor:['rgba(200,90,62,.8)','rgba(212,165,116,.8)','rgba(143,168,87,.8)'],borderRadius:4}]},{indexAxis:'y',scales:{x:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#BBA888'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+}
+
+// === SENSITIVITY ===
+function renderSensitivity(){
+  const m=cm(A);const bnp=m.np[2];
+  function d(o){const a2={...A,...o};if(o.load)a2.load=[...o.load];return cm(a2).np[2]-bnp;}
+  const factors=[
+    {l:'Цена продажи тг/кг',up:d({ph2:A.ph2*1.2}),dn:d({ph2:A.ph2*.8})},
+    {l:'Рост продаж (объём)',up:d({load:A.load.map(v=>v*1.2)}),dn:d({load:A.load.map(v=>v*.8)})},
+    // +20% закупки = рост затрат (прибыль падает), поэтому up использует *.8 (хороший знак), dn *1.2
+    {l:'Цена закупки €/кг',up:d({psera_usd:A.psera_usd*.8}),dn:d({psera_usd:A.psera_usd*1.2})},
+    {l:'Курс EUR/тг',up:d({kurs:A.kurs*.8}),dn:d({kurs:A.kurs*1.2})},
+    {l:'Фрахт €/кг',up:d({pel:A.pel*.8}),dn:d({pel:A.pel*1.2})},
+    {l:'Пошлина % (таможня)',up:d({rsera:A.rsera*.8}),dn:d({rsera:A.rsera*1.2})},
+    {l:'Потери по сроку %',up:d({rvoda:A.rvoda*.5}),dn:d({rvoda:A.rvoda*1.5})},
+    {l:'CAPEX (запуск)',up:d({capex_kzt:A.capex_kzt*.85}),dn:d({capex_kzt:A.capex_kzt*1.15})},
+  ].sort((a,b)=>Math.abs(b.up-b.dn)-Math.abs(a.up-a.dn));
+  mkC('c-tornado','bar',{labels:factors.map(f=>f.l),datasets:[
+    {label:'+20%',data:factors.map(f=>Math.round(f.up/MLN)),backgroundColor:'rgba(143,168,87,.85)',borderRadius:3},
+    {label:'-20%',data:factors.map(f=>Math.round(f.dn/MLN)),backgroundColor:'rgba(200,90,62,.85)',borderRadius:3},
+  ]},{indexAxis:'y',scales:{x:{ticks:{color:'#7A6850',callback:v=>(v>0?'+':'')+v+' млн'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#BBA888'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>(c.raw>0?'+':'')+c.raw+' млн'}}}});
+  // BUG5 FIX: BEP uses total revenue per ton (includes export + steam)
+  const revPerTon_s=m.rev[2]/m.vol[2];
+  const bepT=m.fT[2]/(revPerTon_s-m.vT[2]/m.vol[2]);const cmT=revPerTon_s-m.vT[2]/m.vol[2];
+  document.getElementById('bep-content').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">${[
+    ['BEP кг/год',fmt(Math.round(bepT)),'кг'],['BEP %',fmtP(bepT/A.mosh),'от базы'],['Запас',fmtP(1-bepT/A.mosh),'(V−BEP)/V'],['CM/кг',fmt(Math.round(cmT)),'тг/кг'],
+  ].map(([l,v,s])=>`<div class="kc a"><div class="kc-label">${l}</div><div class="kc-val" style="font-size:16px">${v}</div><div class="kc-sub">${s}</div></div>`).join('')}</div>`;
+  const loads=[.2,.3,.4,.5,.6,.7,.8,.9,1];const vcPt=m.vT[2]/m.vol[2];
+  const profits=loads.map(l=>{const vol=A.mosh*l;return((m.ph2y[2]-vcPt)*vol-m.fT[2])/MLN;});
+  mkC('c-bep','line',{labels:loads.map(l=>Math.round(l*100)+'%'),datasets:[{data:profits.map(v=>Math.round(v)),borderColor:'#8FA857',backgroundColor:'rgba(143,168,87,.1)',fill:true,pointRadius:3,tension:.4}]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+}
+
+// === HR (with add/delete employee) ===
+function renderHR(){
+  const nrabot=A.nrabot;const totalPeople=hrTotalPeople();const totalFot=hrTotalFot();
+  let html=`<div class="hr-summary">
+    ${[['teal','Численность',totalPeople+' чел',hrBlocks.reduce((s,b)=>s+b.staff.length,0)+' должностей'],
+      ['','ФОТ/год',fmt(Math.round(totalFot/MLN))+' млн','без нагрузки'],
+      ['','Нагрузка',fmt(Math.round(totalFot*nrabot/MLN))+' млн','11.5% (ОПВ+Соц+ОСМС)'],
+      ['gold','Полная',fmt(Math.round(totalFot*(1+nrabot)/MLN))+' млн','/год'],
+      ['','ФОТ/кг',fmt(Math.round(totalFot*(1+nrabot)/A.mosh))+' тг/кг','база 1-го года'],
+    ].map(([c,l,v,s])=>`<div class="kc ${c}"><div class="kc-label">${l}</div><div class="kc-val" style="font-size:17px">${v}</div><div class="kc-sub">${s}</div></div>`).join('')}
+  </div>`;
+  // Add employee form
+  html+=`<div class="hr-add-form" id="hr-add-form">
+    <div><label>Блок</label><select id="hr-add-block">${hrBlocks.map(b=>`<option value="${b.id}">${b.name}</option>`).join('')}</select></div>
+    <div><label>Должность</label><input id="hr-add-role" placeholder="Инженер..."></div>
+    <div><label>Кол-во</label><input id="hr-add-qty" type="number" value="1" min="1"></div>
+    <div><label>Оклад тг/мес</label><input id="hr-add-salary" type="number" placeholder="250000"></div>
+    <div><label>Найм</label><select id="hr-add-hire"><option>Q3 2025</option><option>Q4 2025</option><option>Q1 2026</option><option>Q2 2026</option></select></div>
+    <div><label>Примечание</label><input id="hr-add-note" placeholder="Комментарий"></div>
+    <div><button class="hr-add-btn" onclick="hrAddEmployee()">+ Добавить</button></div>
+  </div>`;
+  hrBlocks.forEach(bl=>{
+    const blP=bl.staff.reduce((s,r)=>s+r.qty,0);const blF=bl.staff.reduce((s,r)=>s+r.salary*r.qty*12,0);
+    html+=`<div class="hr-block"><div class="hr-block-head"><span class="hr-block-name" style="color:${bl.color}">${bl.name}</span><span class="hr-block-count">${blP} чел · ${fmt(Math.round(blF/MLN))} млн/год</span></div>
+    <div class="hr-row header"><div>Должность</div><div>Оклад/мес</div><div>ФОТ/год</div><div></div></div>
+    ${bl.staff.map(r=>`<div class="hr-row"><div>${r.role}${r.qty>1?` <span style="color:var(--text3)">×${r.qty}</span>`:''}<br><span style="font-size:10px;color:var(--text3)">${r.note} · ${r.hire}</span></div><div>${fmt(r.salary)}</div><div>${fmt(r.salary*r.qty*12/MLN,1)} млн</div><div><button class="hr-del-btn" onclick="hrDelEmployee('${bl.id}','${r.id}')" title="Удалить">✕</button></div></div>`).join('')}
+    </div>`;
+  });
+  document.getElementById('hr-content').innerHTML=html;
+}
+function hrAddEmployee(){
+  const blockId=document.getElementById('hr-add-block').value;
+  const role=document.getElementById('hr-add-role').value.trim();
+  const qty=parseInt(document.getElementById('hr-add-qty').value)||1;
+  const salary=parseInt(document.getElementById('hr-add-salary').value)||0;
+  const hire=document.getElementById('hr-add-hire').value;
+  const note=document.getElementById('hr-add-note').value.trim();
+  if(!role||!salary){alert('Укажите должность и оклад');return;}
+  const bl=hrBlocks.find(b=>b.id===blockId);if(!bl)return;
+  bl.staff.push({id:'s'+Date.now(),role,qty,salary,hire,note});
+  hrSave();renderAll();
+}
+function hrDelEmployee(blockId,staffId){
+  const bl=hrBlocks.find(b=>b.id===blockId);if(!bl)return;
+  bl.staff=bl.staff.filter(s=>s.id!==staffId);hrSave();renderAll();
+}
+
+// === RISKS ===
+function renderRisks(){
+  const risks=[
+    {n:1,p:4,i:5,name:'Девальвация тенге к EUR',cat:'Валютный',mit:'Частичное хеджирование; пересмотр прайсов 2 раза в год; форвардные контракты на крупные партии',owner:'CFO'},
+    {n:2,p:3,i:5,name:'Срыв холодовой цепи / порча партии',cat:'Логистический',mit:'CMR-страховка; датчики температуры; два независимых рефрижератора; 3 дата-логгера на партию',owner:'Логист'},
+    {n:3,p:3,i:4,name:'Списания по сроку годности',cat:'Операционный',mit:'Короткие заказы (just-in-time); прогноз по сетям; акции -30% за 7 дней до SMD; FEFO',owner:'Рук. продаж'},
+    {n:4,p:3,i:4,name:'Застревание на таможне (СТ-1, сертификация)',cat:'Регуляторный',mit:'Проверенный брокер; заранее декларации соответствия; буфер 14 дней в графике',owner:'Менеджер ВЭД'},
+    {n:5,p:3,i:4,name:'Конкуренция локальных пекарен и импорта',cat:'Рыночный',mit:'Премиум-позиционирование (французский бренд); эксклюзив с поставщиком; категорийный менеджмент в сетях',owner:'CEO'},
+    {n:6,p:2,i:5,name:'Потеря крупной сети (листинг)',cat:'Коммерческий',mit:'Диверсификация: 3-5 сетей + HoReCa; NPS; KPI по SKU-share',owner:'Рук. продаж'},
+    {n:7,p:3,i:3,name:'Рост цены закупки (EU-поставщик)',cat:'Ценовой',mit:'Годовой контракт с фиксацией; запасной поставщик из Польши/Турции',owner:'Рук. ВЭД'},
+    {n:8,p:2,i:4,name:'Задержка рефрижератора (2 нед+)',cat:'Логистический',mit:'Буферный запас на складе 4 недели; второй поставщик логуслуг',owner:'Логист'},
+    {n:9,p:2,i:4,name:'Проверки санэпид (Роспотребнадзор РК)',cat:'Регуляторный',mit:'Паспорта HACCP; журналы температуры; сертифицированный склад',owner:'Зав. складом'},
+    {n:10,p:3,i:3,name:'Сезонность спроса (лето −30%)',cat:'Рыночный',mit:'Расширение SKU под сезон (холодная выпечка); промо в HoReCa; собственные точки',owner:'Trade-маркетолог'},
+    {n:11,p:2,i:4,name:'Рост тарифов на аренду склада',cat:'Операционный',mit:'3-летний контракт с фикс.; индексация ≤ инфляции; опция выкупа',owner:'CFO'},
+    {n:12,p:1,i:5,name:'Форс-мажор (санкции, закрытие границ)',cat:'Макро',mit:'Страхование груза; резервный фонд 2 мес OPEX; альт. маршруты через Турцию',owner:'CEO'},
+  ];
+  const scoreColor=s=>s>=12?'var(--red)':s>=6?'var(--gold)':'var(--green)';
+  const cellClass=(p,i)=>{const s=p*i;return s>=15?'hm-x':s>=10?'hm-5':s>=6?'hm-4':s>=3?'hm-3':s>=2?'hm-2':'hm-1';};
+  let hmH=`<div class="heatmap"><div class="hm-label"></div>`;
+  [1,2,3,4,5].forEach(i=>hmH+=`<div class="hm-label" style="font-size:9px;color:var(--text3)">${i}<br>Возд.</div>`);
+  for(let p=5;p>=1;p--){hmH+=`<div class="hm-label" style="font-size:9px">${p}<br>Вер.</div>`;
+    [1,2,3,4,5].forEach(i=>{const rh=risks.filter(r=>r.p===p&&r.i===i);hmH+=`<div class="hm-cell ${cellClass(p,i)}">${rh.length?`<span class="hm-badge">${rh.map(r=>r.n).join(',')}</span>`:p*i}</div>`;});}
+  hmH+=`</div>`;
+  let html=`<div class="risk-grid"><div class="risk-matrix-wrap"><div class="matrix-title">Тепловая карта P×I</div>${hmH}</div>
+    <div><div class="risk-matrix-wrap"><div class="matrix-title">Топ рисков</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+    ${risks.filter(r=>r.p*r.i>=9).sort((a,b)=>b.p*b.i-a.p*a.i).map(r=>`<div style="background:var(--navy4);border-radius:5px;padding:8px 10px;border-left:3px solid ${scoreColor(r.p*r.i)}"><div style="font-size:10px;color:var(--text3);font-family:var(--mono)">Риск ${r.n} · ${r.cat}</div><div style="font-size:12px;font-weight:500;margin:3px 0">${r.name}</div><div style="font-family:var(--mono);font-size:13px;font-weight:700;color:${scoreColor(r.p*r.i)}">${r.p*r.i}</div></div>`).join('')}
+    </div></div></div></div>`;
+  html+=`<div class="risk-list">${risks.map(r=>{const s=r.p*r.i;return`<div class="risk-item"><div class="risk-item-head"><span class="risk-num">${r.n}</span><span class="risk-name">${r.name}</span><span style="font-size:10px;color:var(--text3);background:var(--navy4);padding:2px 7px;border-radius:4px">${r.cat}</span><span class="risk-score" style="color:${scoreColor(s)}">${s}</span></div><div class="risk-bar"><div class="risk-bar-fill" style="width:${s/25*100}%;background:${scoreColor(s)}"></div></div><div class="risk-detail" style="margin-top:6px"><span style="color:var(--text3)">P=${r.p} · I=${r.i} · ${r.owner}</span></div><div class="risk-mit">↳ ${r.mit}</div></div>`;}).join('')}</div>`;
+  document.getElementById('risks-content').innerHTML=html;
+}
+
+// === ROADMAP + TASK MANAGER ===
+const RM_KEY='croissant_roadmap_v1';
+const RM_PRIORITIES=[{id:'low',l:'Низкий',c:'var(--green)',bg:'rgba(143,168,87,.12)'},{id:'med',l:'Средний',c:'var(--gold)',bg:'rgba(232,192,119,.12)'},{id:'high',l:'Высокий',c:'var(--red)',bg:'rgba(200,90,62,.15)'},{id:'crit',l:'Критичный',c:'#D96642',bg:'rgba(255,64,64,.2)'}];
+const RM_STATUSES=[{id:'todo',l:'Запланировано',c:'var(--text3)',bg:'rgba(74,98,128,.08)'},{id:'active',l:'В работе',c:'var(--gold)',bg:'rgba(232,192,119,.12)'},{id:'done',l:'Выполнено',c:'var(--green)',bg:'rgba(143,168,87,.12)'},{id:'blocked',l:'Заблокировано',c:'var(--red)',bg:'rgba(200,90,62,.12)'}];
+const RM_DEFAULT=[
+{id:'t1',name:'Регистрация ТОО + коды ВЭД',phase:'Подготовка',priority:'crit',status:'done',start:'2025-09',end:'2025-10',owner:'Юрист',phone:'',note:'БИН, коды ТН ВЭД 1905, валютный счёт'},
+{id:'t2',name:'Поиск поставщика в ЕС (Франция/Бельгия)',phase:'Подготовка',priority:'crit',status:'active',start:'2025-09',end:'2025-11',owner:'Рук. ВЭД',phone:'',note:'3-5 кандидатов, референсы, образцы'},
+{id:'t3',name:'Дегустация + отбор SKU (8-12 позиций)',phase:'Подготовка',priority:'high',status:'active',start:'2025-11',end:'2025-12',owner:'CEO',phone:'',note:'Круассан, pain au chocolat, бриошь, кранч'},
+{id:'t4',name:'Контракт с поставщиком + первый PO',phase:'Подготовка',priority:'crit',status:'todo',start:'2025-12',end:'2026-01',owner:'Рук. ВЭД',phone:'',note:'FCA/CIP, L/C на 50%, годовой volume lock'},
+{id:'t5',name:'Аренда холодильного склада',phase:'Запуск',priority:'crit',status:'todo',start:'2025-12',end:'2026-01',owner:'Зав. складом',phone:'',note:'−18°C, Алматы, 300-500 м², сертификация'},
+{id:'t6',name:'Покупка 2 рефрижераторных фургонов',phase:'Запуск',priority:'high',status:'todo',start:'2026-01',end:'2026-02',owner:'Логист',phone:'',note:'Mercedes Sprinter / Iveco Daily −25°C'},
+{id:'t7',name:'Брендинг + фирменный стиль + сайт',phase:'Запуск',priority:'high',status:'todo',start:'2026-01',end:'2026-02',owner:'Trade-маркетолог',phone:'',note:'Нейминг, логотип, упаковка, сайт-каталог'},
+{id:'t8',name:'Декларации соответствия ЕАЭС',phase:'Таможня',priority:'crit',status:'todo',start:'2026-01',end:'2026-02',owner:'Менеджер ВЭД',phone:'',note:'ТР ТС 021/2011, этикетки на каз+рус'},
+{id:'t9',name:'Выбор брокера + предварительный HS-код',phase:'Таможня',priority:'high',status:'todo',start:'2026-01',end:'2026-02',owner:'Менеджер ВЭД',phone:'',note:'ТН ВЭД 1905 90 — проверка ставки'},
+{id:'t10',name:'Первая тестовая партия (5 т)',phase:'Таможня',priority:'crit',status:'todo',start:'2026-02',end:'2026-03',owner:'Рук. ВЭД',phone:'',note:'Рефрижератор, CMR, ГТД, растаможка'},
+{id:'t11',name:'Сэмплинг в ключевые сети',phase:'Продажи',priority:'high',status:'todo',start:'2026-03',end:'2026-04',owner:'Рук. продаж',phone:'',note:'Magnum, Small, Galmart — заявки на листинг'},
+{id:'t12',name:'Листинг в 1-й сети + первая отгрузка',phase:'Продажи',priority:'crit',status:'todo',start:'2026-04',end:'2026-05',owner:'KAM — сети',phone:'',note:'Договор, условия: ретро-бонус, возвраты'},
+{id:'t13',name:'Выход на HoReCa (кафе, пекарни)',phase:'Продажи',priority:'high',status:'todo',start:'2026-04',end:'2026-06',owner:'Менеджер HoReCa',phone:'',note:'30+ локаций, акции, консультация шефа'},
+{id:'t14',name:'Запуск регулярных контейнеров (еженедельно)',phase:'Рост',priority:'high',status:'todo',start:'2026-06',end:'2026-09',owner:'Рук. ВЭД',phone:'',note:'Стабильный объём 15-20 т/неделя'},
+{id:'t15',name:'Подключение 2-3 сетей + Астана',phase:'Рост',priority:'high',status:'todo',start:'2026-07',end:'2026-12',owner:'Рук. продаж',phone:'',note:'Расширение географии, второй склад'},
+{id:'t16',name:'Запуск собственной розницы (2-3 точки)',phase:'Рост',priority:'med',status:'todo',start:'2027-01',end:'2027-06',owner:'CEO',phone:'',note:'Флагманские бутик-пекарни у ТРЦ'},
+{id:'t17',name:'Расширение ассортимента (+12 SKU)',phase:'Рост',priority:'med',status:'todo',start:'2027-03',end:'2027-08',owner:'CEO',phone:'',note:'Тарталетки, макарон, заморож. хлеб'},
+];
+let rmTasks;function rmLoad(){try{const s=JSON.parse(localStorage.getItem(RM_KEY));if(s&&s.length)return s;}catch(e){}return JSON.parse(JSON.stringify(RM_DEFAULT));}
+function rmSave(){try{localStorage.setItem(RM_KEY,JSON.stringify(rmTasks));}catch(e){}}
+rmTasks=rmLoad();let rmFilter='all';let rmPFilter='all';
+
+function renderRoadmap(){
+const done=rmTasks.filter(t=>t.status==='done').length;const active=rmTasks.filter(t=>t.status==='active').length;
+const blocked=rmTasks.filter(t=>t.status==='blocked').length;const critCount=rmTasks.filter(t=>t.priority==='crit'&&t.status!=='done').length;
+const progress=rmTasks.length>0?Math.round(done/rmTasks.length*100):0;
+let html=`<div class="kpi-grid" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr));margin-bottom:14px">
+<div class="kc g"><div class="kc-label">Выполнено</div><div class="kc-val">${done}/${rmTasks.length}</div><div class="kc-sub">${progress}%</div></div>
+<div class="kc a"><div class="kc-label">В работе</div><div class="kc-val">${active}</div><div class="kc-sub">задач</div></div>
+<div class="kc r"><div class="kc-label">Заблокировано</div><div class="kc-val">${blocked}</div><div class="kc-sub">задач</div></div>
+<div class="kc" style="--ac:#D96642"><div class="kc-label">Критичные</div><div class="kc-val">${critCount}</div><div class="kc-sub">не выполнены</div></div></div>`;
+// Progress bar
+html+=`<div style="margin-bottom:16px;background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+<div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:11px;color:var(--text2)">Общий прогресс</span><span style="font-family:var(--mono);font-size:11px;color:var(--teal)">${progress}%</span></div>
+<div style="height:5px;background:var(--navy4);border-radius:3px;overflow:hidden"><div style="height:100%;width:${progress}%;background:var(--teal);border-radius:3px;transition:width .3s"></div></div></div>`;
+// Filters
+html+=`<div class="dds-tb" style="margin-bottom:12px;flex-wrap:wrap">
+<div class="tgg">${[{id:'all',l:'Все'},{id:'todo',l:'План'},{id:'active',l:'В работе'},{id:'done',l:'Готово'},{id:'blocked',l:'Блок.'}].map(s=>`<button class="tgb${rmFilter===s.id?' active':''}" onclick="rmFilter='${s.id}';renderRoadmap()">${s.l}</button>`).join('')}</div>
+<div class="tgg">${[{id:'all',l:'Все'},{id:'crit',l:'Крит.'},{id:'high',l:'Выс.'},{id:'med',l:'Средн.'},{id:'low',l:'Низк.'}].map(p=>`<button class="tgb${rmPFilter===p.id?' active':''}" onclick="rmPFilter='${p.id}';renderRoadmap()">${p.l}</button>`).join('')}</div>
+<button class="breset" onclick="rmTasks=JSON.parse(JSON.stringify(RM_DEFAULT));rmSave();renderRoadmap()">&#x21BA; Сброс</button></div>`;
+// Add form
+html+=`<div style="background:var(--navy4);border:1px solid var(--border2);border-radius:8px;padding:12px;margin-bottom:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;align-items:end">
+<div><label style="font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:2px">Задача *</label><input id="rm-name" placeholder="Название" style="width:100%;padding:5px 7px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;font-family:var(--font);outline:none"></div>
+<div><label style="font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:2px">Фаза</label><select id="rm-phase" style="width:100%;padding:5px 7px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px"><option>Подготовка</option><option>Запуск</option><option>Таможня</option><option>Продажи</option><option>Рост</option><option>Прочее</option></select></div>
+<div><label style="font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:2px">Приоритет</label><select id="rm-prio" style="width:100%;padding:5px 7px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px">${RM_PRIORITIES.map(p=>`<option value="${p.id}">${p.l}</option>`).join('')}</select></div>
+<div><label style="font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:2px">Начало</label><input id="rm-start" type="month" value="2026-01" style="width:100%;padding:4px 7px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px"></div>
+<div><label style="font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:2px">Конец</label><input id="rm-end" type="month" value="2026-03" style="width:100%;padding:4px 7px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px"></div>
+<div><label style="font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:2px">Ответственный</label><input id="rm-owner" placeholder="Имя" style="width:100%;padding:5px 7px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px"></div>
+<div><label style="font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:2px">Телефон</label><input id="rm-phone" placeholder="+7 7xx..." style="width:100%;padding:5px 7px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;font-family:var(--mono)"></div>
+<div><label style="font-size:10px;color:var(--text3);font-family:var(--mono);display:block;margin-bottom:2px">Примечание</label><input id="rm-note" placeholder="Комментарий" style="width:100%;padding:5px 7px;background:rgba(255,255,255,.06);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px"></div>
+<div><button onclick="rmAdd()" style="padding:5px 14px;background:var(--teal);color:var(--navy);border:none;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);width:100%">+ Добавить</button></div></div>`;
+// Task checklist by phase
+const filtered=rmTasks.filter(t=>(rmFilter==='all'||t.status===rmFilter)&&(rmPFilter==='all'||t.priority===rmPFilter));
+const phases=[...new Set(filtered.map(t=>t.phase))];
+const phaseC={'Подготовка':'#A67A4B','Запуск':'#D4A574','Таможня':'#E8C077','Продажи':'#8FA857','Рост':'#B89878','Прочее':'var(--text3)'};
+phases.forEach(phase=>{const pT=filtered.filter(t=>t.phase===phase);const pD=pT.filter(t=>t.status==='done').length;
+html+=`<div style="background:var(--navy3);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px">
+<div style="background:var(--navy4);padding:7px 14px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid ${phaseC[phase]||'var(--text3)'}">
+<span style="font-size:12px;font-weight:500;color:${phaseC[phase]||'var(--text2)'}">${phase}</span>
+<span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${pD}/${pT.length}</span></div>`;
+pT.forEach(t=>{const pri=RM_PRIORITIES.find(p=>p.id===t.priority)||RM_PRIORITIES[0];const sts=RM_STATUSES.find(s=>s.id===t.status)||RM_STATUSES[0];
+html+=`<div style="display:grid;grid-template-columns:28px 1fr auto;border-bottom:1px solid var(--border)">
+<div style="padding:8px 6px;text-align:center"><input type="checkbox" ${t.status==='done'?'checked':''} onchange="rmToggle('${t.id}',this.checked)" style="cursor:pointer;width:14px;height:14px;accent-color:var(--teal)"></div>
+<div style="padding:7px 4px">
+<div style="font-size:12px;font-weight:${t.status==='done'?'400':'500'};color:${t.status==='done'?'var(--text3)':'var(--text)'};${t.status==='done'?'text-decoration:line-through;opacity:.6':''}">${t.name}</div>
+<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;font-size:9px">
+<span style="padding:1px 6px;border-radius:10px;background:${pri.bg};color:${pri.c}">${pri.l}</span>
+<span style="padding:1px 6px;border-radius:10px;background:${sts.bg};color:${sts.c}">${sts.l}</span>
+<span style="color:var(--text3);font-family:var(--mono)">${t.start}→${t.end}</span>
+${t.owner?`<span style="color:var(--text2)">${t.owner}</span>`:''}
+${t.phone?`<span style="color:var(--teal);font-family:var(--mono)">${t.phone}</span>`:''}
+</div>${t.note?`<div style="font-size:9px;color:var(--text3);margin-top:2px;border-left:2px solid var(--border2);padding-left:5px">${t.note}</div>`:''}</div>
+<div style="padding:6px 4px;display:flex;gap:3px;align-items:start">
+<select onchange="rmSetStatus('${t.id}',this.value)" style="padding:2px 4px;background:var(--navy4);border:1px solid var(--border);border-radius:3px;color:var(--text2);font-size:9px;cursor:pointer">
+${RM_STATUSES.map(s=>`<option value="${s.id}"${t.status===s.id?' selected':''}>${s.l}</option>`).join('')}</select>
+<select onchange="rmSetPrio('${t.id}',this.value)" style="padding:2px 4px;background:var(--navy4);border:1px solid var(--border);border-radius:3px;color:var(--text2);font-size:9px;cursor:pointer">
+${RM_PRIORITIES.map(p=>`<option value="${p.id}"${t.priority===p.id?' selected':''}>${p.l}</option>`).join('')}</select>
+<button onclick="rmDel('${t.id}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:10px;padding:2px 3px;opacity:.3" onmouseover="this.style.opacity='1';this.style.color='var(--red)'" onmouseout="this.style.opacity='.3';this.style.color='var(--text3)'" title="Удалить">✕</button>
+</div></div>`;});html+=`</div>`;});
+if(filtered.length===0)html+=`<div style="text-align:center;padding:24px;color:var(--text3);font-size:12px">Нет задач с выбранными фильтрами</div>`;
+document.getElementById('roadmap-content').innerHTML=html;
+}
+function rmAdd(){const name=document.getElementById('rm-name').value.trim();if(!name){alert('Укажите название задачи');return;}
+rmTasks.push({id:'t'+Date.now(),name,phase:document.getElementById('rm-phase').value,priority:document.getElementById('rm-prio').value,status:'todo',start:document.getElementById('rm-start').value,end:document.getElementById('rm-end').value,owner:document.getElementById('rm-owner').value.trim(),phone:document.getElementById('rm-phone').value.trim(),note:document.getElementById('rm-note').value.trim()});
+rmSave();renderRoadmap();document.getElementById('rm-name').value='';document.getElementById('rm-note').value='';}
+function rmToggle(id,checked){const t=rmTasks.find(t=>t.id===id);if(t)t.status=checked?'done':'todo';rmSave();renderRoadmap();}
+function rmSetStatus(id,status){const t=rmTasks.find(t=>t.id===id);if(t)t.status=status;rmSave();renderRoadmap();}
+function rmSetPrio(id,prio){const t=rmTasks.find(t=>t.id===id);if(t)t.priority=prio;rmSave();renderRoadmap();}
+function rmDel(id){rmTasks=rmTasks.filter(t=>t.id!==id);rmSave();renderRoadmap();}
+
+
+function renderInvest(){
+  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
+  const NPV=npvC(A.wacc,allTg),IRR=irr(allTg),PI=1+NPV/(m.capexM*MLN);
+  // BUG2 FIX: payback off-by-one
+  let pp=null,cum=allTg[0];
+  fcf.forEach((v,i)=>{const prev=cum;cum+=v*MLN;if(cum>=0&&pp===null&&v*MLN!==0)pp=i+(-prev)/(v*MLN);});
+  const totalRevenue5=m.rev.reduce((s,v)=>s+v,0);
+  const totalProfit5=m.np.reduce((s,v)=>s+v,0);
+  const avgEbitdaMargin=m.eb.slice(2).reduce((s,v,i)=>s+v/m.rev[i+2],0)/3;
+
+  // === FULL FUNDING NEED (импорт круассанов) ===
+  const euAmt=A.capex_usd*A.kurs;const kzAmt=A.capex_kzt;
+  const fotAnnual=hrTotalFot();
+  const fotPreLaunch=Math.round(fotAnnual*0.33/MLN); // 4 мес ФОТ до первой выручки
+  // Оборотный капитал для импортёра: первые 2 партии + НДС-ввозной замороженный до возмещения (~20% выручки 1-го года)
+  const firstBatches=Math.round(m.rev[0]*0.22/MLN);
+  const nwc=firstBatches; // переименовано для совместимости с Фаза 3
+  const reserve=Math.round(m.capexM*0.05); // резерв 5% CAPEX
+  const preLaunch=Math.round(m.capexM*0.10); // юридические + дегустация + контракты
+
+  const phase1=preLaunch;                                 // Подготовка
+  const phase2=Math.round(m.capexM-preLaunch);            // Запуск (склад, бренд, рефрижераторы)
+  const phase3=fotPreLaunch+firstBatches+reserve;         // Первая партия + команда
+  const totalFunding=Math.round(m.capexM)+phase3;
+
+  // Deficit months: when cumulative cash is negative
+  const monthlyFcfY1=fcf[0]/12;
+  let cumCash=-totalFunding;
+  const cashByMonth=[];
+  for(let y=0;y<5;y++){
+    const ramps=[0.3,0.4,0.5,0.6,0.7,0.8,0.85,0.9,0.95,1,1,1];
+    const yFcf=fcf[y];
+    for(let mo=0;mo<12;mo++){
+      const r=y===0?ramps[mo]:1;
+      const rSum=y===0?ramps.reduce((s,v)=>s+v,0):12;
+      cumCash+=yFcf*r/rSum;
+      cashByMonth.push({yr:2026+y,mo:mo+1,cum:cumCash});
+    }
+  }
+  const breakEvenMonth=cashByMonth.findIndex(c=>c.cum>=0);
+  const maxDeficit=Math.min(...cashByMonth.map(c=>c.cum));
+
+  let html='';
+
+  // === SECTION 1: КПИ ===
+  html+=`<div class="kpi-grid" style="grid-template-columns:repeat(auto-fill,minmax(155px,1fr));margin-bottom:22px">
+    <div class="kc" style="--ac:var(--red)"><div class="kc-label">Всего нужно</div><div class="kc-val">${fmt(totalFunding)} млн</div><div class="kc-sub">€${fmt(Math.round(totalFunding/A.kurs*1000))} тыс</div></div>
+    <div class="kc a"><div class="kc-label">CAPEX запуска</div><div class="kc-val">${fmt(Math.round(m.capexM))} млн</div><div class="kc-sub">${Math.round(m.capexM/totalFunding*100)}% от общей суммы</div></div>
+    <div class="kc"><div class="kc-label">1-я партия + команда</div><div class="kc-val">${fmt(phase3)} млн</div><div class="kc-sub">оборотка + ФОТ + резерв</div></div>
+    <div class="kc g"><div class="kc-label">IRR</div><div class="kc-val">${fmtP(IRR)}</div><div class="kc-sub">доходность проекта</div></div>
+    <div class="kc g"><div class="kc-label">Окупаемость</div><div class="kc-val">${pp?pp.toFixed(1)+' лет':'—'}</div><div class="kc-sub">${breakEvenMonth>0?'~месяц '+(breakEvenMonth+1):'—'}</div></div>
+    <div class="kc g"><div class="kc-label">NPV</div><div class="kc-val">${fmtM(NPV)}</div><div class="kc-sub">чистая привед. стоим.</div></div>
+  </div>`;
+
+  // === SECTION 2: ДВА ЭТАПА ЗАТРАТ ===
+  html+=`<div class="isec"><h3>Этапы инвестирования</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+    <div class="sc-card" style="--sc-c:#A67A4B"><div class="sc-name">Фаза 1: Подготовка</div><div class="sc-sub">Q3-Q4 2025 · До первой партии</div>
+      ${[['Регистрация ТОО + ВЭД-коды',Math.round(preLaunch*0.15)],['Поездки к поставщикам + дегустация',Math.round(preLaunch*0.35)],['Юридические + комплаенс',Math.round(preLaunch*0.25)],['Пред-маркетинг + исследования',Math.round(preLaunch*0.25)]].map(([k,v])=>`<div class="sc-row"><span class="sc-key">${k}</span><span class="sc-val">${fmt(v)} млн</span></div>`).join('')}
+      <div class="sc-row" style="border-top:1px solid var(--border2);font-weight:500"><span class="sc-key">Итого фаза 1</span><span class="sc-val">${fmt(phase1)} млн</span></div>
+    </div>
+    <div class="sc-card" style="--sc-c:var(--teal)"><div class="sc-name">Фаза 2: Запуск инфраструктуры</div><div class="sc-sub">Q1 2026 · CAPEX</div>
+      ${[['Рефрижераторные фургоны (EU)',Math.round(euAmt)],['Холодильный склад + стеллажи',Math.round(kzAmt*0.44)],['Брендинг + маркетинг-запуск',Math.round(kzAmt*0.30)],['Офис + ИТ + ТОО',Math.round(kzAmt*0.26)]].map(([k,v])=>`<div class="sc-row"><span class="sc-key">${k}</span><span class="sc-val">${fmt(v)} млн</span></div>`).join('')}
+      <div class="sc-row" style="border-top:1px solid var(--border2);font-weight:500"><span class="sc-key">Итого фаза 2</span><span class="sc-val">${fmt(phase2)} млн</span></div>
+    </div>
+    <div class="sc-card" style="--sc-c:var(--green)"><div class="sc-name">Фаза 3: Первая партия</div><div class="sc-sub">Q1-Q2 2026 · Оборотный + команда</div>
+      ${[['Закупка 1-2 партий (~22% выручки Y1)',firstBatches],['ФОТ до первой выручки (4 мес)',fotPreLaunch],['Резерв + НДС-ввозной временно',reserve]].map(([k,v])=>`<div class="sc-row"><span class="sc-key">${k}</span><span class="sc-val">${fmt(v)} млн</span></div>`).join('')}
+      <div class="sc-row" style="border-top:1px solid var(--border2);font-weight:500"><span class="sc-key">Итого фаза 3</span><span class="sc-val">${fmt(phase3)} млн</span></div>
+    </div>
+  </div>
+  <div style="background:var(--navy4);border:1px solid var(--border);border-left:3px solid var(--teal);padding:10px 14px;border-radius:0 6px 6px 0;font-size:12px;color:var(--text2);margin-bottom:16px">
+    <strong style="color:var(--teal)">Итого полная потребность: ${fmt(totalFunding)} млн тг</strong> (€${fmt(Math.round(totalFunding/A.kurs*1000))} тыс) — минимум, чтобы запустить импорт, сделать первую партию и дойти до устойчивой выручки.
+  </div></div>`;
+
+  // === SECTION 3: КАЛЬКУЛЯТОР ДОЛИ ИНВЕСТОРА ===
+  html+=`<div class="isec"><h3>Калькулятор доходности инвестора</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="cb">
+      <div style="font-size:13px;font-weight:500;color:var(--teal);margin-bottom:14px">Параметры сделки</div>
+      <div class="field" style="margin-bottom:12px"><label>Сумма инвестиции, млн тг</label><div class="frow"><input type="range" min="100" max="${totalFunding}" step="10" value="${Math.round(totalFunding*0.4)}" id="inv-amount" oninput="calcInvestor()"><span class="fval" id="inv-amount-v">${fmt(Math.round(totalFunding*0.4))}</span></div></div>
+      <div class="field" style="margin-bottom:12px"><label>Доля инвестора, %</label><div class="frow"><input type="range" min="5" max="75" step="1" value="30" id="inv-share" oninput="calcInvestor()"><span class="fval" id="inv-share-v">30%</span></div></div>
+      <div class="field" style="margin-bottom:12px"><label>Горизонт, лет</label><div class="frow"><input type="range" min="3" max="10" step="1" value="5" id="inv-horizon" oninput="calcInvestor()"><span class="fval" id="inv-horizon-v">5</span></div></div>
+      <div style="background:var(--navy4);border:1px solid var(--border);border-radius:6px;padding:10px;margin-top:12px;font-size:11px;color:var(--text3)">
+        <div>Полная потребность: <strong style="color:var(--text)">${fmt(totalFunding)} млн</strong></div>
+        <div>Средства основателя: <span id="inv-founder">${fmt(Math.round(totalFunding*0.6))}</span> млн</div>
+      </div>
+    </div>
+    <div class="cb">
+      <div style="font-size:13px;font-weight:500;color:var(--green);margin-bottom:14px">Доходность инвестора</div>
+      <div class="kpi-grid" style="grid-template-columns:1fr 1fr;gap:9px" id="inv-results"></div>
+      <div style="margin-top:14px"><div class="ct">Денежный поток инвестора, млн тг</div><div class="cw"><canvas id="c-inv-flow"></canvas></div></div>
+    </div>
+  </div></div>`;
+
+  // === SECTION 4: ТАЙМЛАЙН ===
+  html+=`<div class="isec"><h3>Когда инвестор получит деньги обратно?</h3>
+  <div class="cg">
+    <div class="cb"><div class="ct">Кассовый баланс проекта по месяцам, млн тг</div><div class="cw tall"><canvas id="c-inv-cash"></canvas></div></div>
+    <div class="cb">
+      <div class="ct">Ключевые даты</div>
+      ${[
+        {l:'Начало инвестирования',v:'Q3 2025',c:'#A67A4B'},
+        {l:'Контракт с EU-поставщиком',v:'Q4 2025',c:'var(--teal)'},
+        {l:'Первая партия (растаможка)',v:'Q1 2026',c:'var(--gold)'},
+        {l:'Первая выручка (сети + HoReCa)',v:'Q2 2026',c:'var(--gold)'},
+        {l:'Операционная прибыль',v:'Q1 2027',c:'var(--green)'},
+        {l:'Полная окупаемость',v:breakEvenMonth>0?cashByMonth[breakEvenMonth].yr+', м.'+cashByMonth[breakEvenMonth].mo:'5+ лет',c:breakEvenMonth>0?'var(--green)':'var(--red)'},
+        {l:'Макс. кассовый разрыв',v:fmt(Math.round(maxDeficit))+' млн',c:'var(--red)'},
+      ].map(i=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <div style="width:8px;height:8px;border-radius:50%;background:${i.c}"></div>
+        <div style="flex:1;font-size:12px;color:var(--text2)">${i.l}</div>
+        <div style="font-family:var(--mono);font-size:12px;font-weight:500">${i.v}</div>
+      </div>`).join('')}
+    </div>
+  </div></div>`;
+
+  // === SECTION 5: COMPARISON ===
+  html+=`<div class="isec"><h3>Сравнение с альтернативами</h3>
+  <div class="tb"><table>
+    <tr><th>Показатель</th><th style="color:var(--teal)">Croissant Import</th><th>Депозит</th><th>Гос. облигации</th><th>Недвижимость</th></tr>
+    <tr><td>Доходность</td><td class="pos" style="font-weight:500">${fmtP(IRR)}</td><td>14-16%</td><td>10-12%</td><td>8-15%</td></tr>
+    <tr><td>Срок возврата</td><td>${pp?pp.toFixed(1)+' лет':'—'}</td><td>Бессрочный</td><td>3-10 лет</td><td>7-15 лет</td></tr>
+    <tr><td>Мультипликатор</td><td class="pos" style="font-weight:500">${PI.toFixed(2)}×</td><td>1.0×</td><td>~1.0×</td><td>1.2-1.5×</td></tr>
+    <tr><td>Ликвидность</td><td>Средняя</td><td>Высокая</td><td>Средняя</td><td>Низкая</td></tr>
+    <tr><td>Реальный актив</td><td class="pos">Да (товарооборот + бренд)</td><td>Нет</td><td>Нет</td><td>Да</td></tr>
+  </table></div></div>`;
+
+  document.getElementById('invest-content').innerHTML=html;
+
+  // === RENDER CHARTS ===
+  setTimeout(()=>{
+    calcInvestor();
+    // Cash balance chart
+    const labels60=cashByMonth.map(c=>c.mo===1?c.yr:'');
+    mkC('c-inv-cash','line',{labels:cashByMonth.map((_,i)=>i%6===0?cashByMonth[i].yr+' м'+cashByMonth[i].mo:''),datasets:[
+      {data:cashByMonth.map(c=>Math.round(c.cum)),borderColor:'var(--teal)',backgroundColor:'rgba(212,165,116,.08)',fill:true,pointRadius:0,tension:.3},
+      {data:cashByMonth.map(()=>0),borderColor:'rgba(255,255,255,.15)',borderDash:[5,5],pointRadius:0},
+    ]},{scales:{x:{ticks:{color:'#7A6850',maxTicksLimit:10,font:{size:9}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+  },60);
+}
+
+// === INVESTOR CALCULATOR ===
+function calcInvestor(){
+  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);
+  const fotAnnual=hrTotalFot();
+  const nwc=Math.round(m.rev[0]*0.22/MLN);   // оборотка = ~22% выручки 1-го года (2 партии)
+  const fotPre=Math.round(fotAnnual*0.33/MLN); // 4 мес ФОТ до первой выручки
+  const reserve=Math.round(m.capexM*0.05);
+  const totalFunding=Math.round(m.capexM)+nwc+fotPre+reserve;
+
+  const amount=parseFloat(document.getElementById('inv-amount').value);
+  const share=parseFloat(document.getElementById('inv-share').value)/100;
+  const horizon=parseInt(document.getElementById('inv-horizon').value);
+
+  document.getElementById('inv-amount-v').textContent=fmt(Math.round(amount));
+  document.getElementById('inv-share-v').textContent=Math.round(share*100)+'%';
+  document.getElementById('inv-horizon-v').textContent=horizon;
+  document.getElementById('inv-founder').textContent=fmt(totalFunding-Math.round(amount));
+
+  // Investor gets share% of net profit each year as dividends
+  const invFlows=[-amount];
+  let cumDiv=0;
+  const divByYear=[];
+  for(let i=0;i<horizon;i++){
+    const np_i=i<m.np.length?m.np[i]/MLN:m.np[m.np.length-1]/MLN*1.05;
+    const div=Math.max(np_i*share,0);
+    invFlows.push(div);
+    cumDiv+=div;
+    divByYear.push(Math.round(div));
+  }
+  const totalReturn=cumDiv;
+  const invROI=(totalReturn/amount-1)*100;
+  const invMultiple=totalReturn/amount;
+  // BUG6 FIX: investor payback was off-by-one — use i (not i+1) as base years
+  let invPP=null,invCum=-amount;
+  for(let i=0;i<horizon;i++){
+    const invPrev=invCum;
+    invCum+=divByYear[i];
+    if(invCum>=0&&invPP===null)invPP=i+(invPrev<0&&divByYear[i]>0?-invPrev/divByYear[i]:0);
+  }
+  // Investor IRR
+  const invIRR=invFlows.length>2?irr(invFlows.map(v=>v*MLN)):0;
+
+  document.getElementById('inv-results').innerHTML=[
+    {l:'Инвестиция',v:fmt(Math.round(amount))+' млн',s:'вложение',c:'w'},
+    {l:'Доля',v:Math.round(share*100)+'%',s:'в компании',c:''},
+    {l:'Дивиденды ('+horizon+' лет)',v:fmt(Math.round(totalReturn))+' млн',s:'суммарно',c:totalReturn>amount?'g':'r'},
+    {l:'Мультипликатор',v:invMultiple.toFixed(2)+'×',s:'возврат/вложение',c:invMultiple>1?'g':'r'},
+    {l:'IRR инвестора',v:fmtP(invIRR),s:'годовая доходность',c:invIRR>A.wacc?'g':'r'},
+    {l:'Окупаемость',v:invPP?invPP.toFixed(1)+' лет':'Не окупается',s:'возврат инвестиции',c:invPP&&invPP<=horizon?'g':'r'},
+  ].map(k=>`<div class="kc ${k.c}" style="padding:10px 12px"><div class="kc-label">${k.l}</div><div class="kc-val" style="font-size:15px">${k.v}</div><div class="kc-sub">${k.s}</div></div>`).join('');
+
+  // Investor cash flow chart
+  const yLabels=['Инвест.',...YRS.slice(0,horizon)];
+  const invData=[-Math.round(amount),...divByYear];
+  let invCumArr=[];let ic=-amount;invCumArr.push(Math.round(ic));
+  divByYear.forEach(d=>{ic+=d;invCumArr.push(Math.round(ic))});
+  mkC('c-inv-flow','bar',{labels:yLabels,datasets:[
+    {type:'bar',label:'Дивиденды',data:invData,backgroundColor:invData.map(v=>v<0?'rgba(200,90,62,.8)':'rgba(143,168,87,.8)'),borderRadius:3,order:2},
+    {type:'line',label:'Накопл.',data:invCumArr,borderColor:'var(--gold)',backgroundColor:'rgba(232,192,119,.08)',fill:true,pointBackgroundColor:invCumArr.map(v=>v<0?'#C85A3E':'#8FA857'),pointRadius:5,tension:.3,order:1},
+  ]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+}
+
+// === RENDER ALL ===
+function renderAll(){
+  try{renderBar();}catch(e){console.warn('bar:',e);}
+  const active=document.querySelector('.panel.active');if(!active)return;
+  const id=active.id.replace('panel-','');
+  try{
+    if(id==='dashboard')renderDashboard();
+    if(id==='assumptions')buildInputs();
+    if(id==='pl')renderPL();
+    if(id==='capex')renderCapex();
+    if(id==='dds')renderDDS();
+    if(id==='cashflow')renderCFTable();
+    if(id==='metrics')renderMetrics();
+    if(id==='scenarios')renderScenarios();
+    if(id==='sensitivity')renderSensitivity();
+    if(id==='hr')renderHR();
+    if(id==='risks')renderRisks();
+    if(id==='invest')renderInvest();
+    if(id==='roadmap')renderRoadmap();
+  }catch(e){console.warn('render['+id+']:',e);}
+}
+
+// === BOOT ===
+buildInputs();
+function boot(){try{renderBar();}catch(e){}try{renderDashboard();}catch(e){}}
+function waitForChartAndBoot(){if(typeof Chart!=='undefined'){boot();}else{setTimeout(waitForChartAndBoot,50);}}
+window.addEventListener('load',waitForChartAndBoot);
+setTimeout(function(){try{boot();}catch(x){}},2000);
+</script>
+</body>
+</html>
