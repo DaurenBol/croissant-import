@@ -23,6 +23,7 @@ storage_state.json
 # Backups
 *.bak
 *.orig
+backups/
 
 # OS garbage
 Thumbs.db

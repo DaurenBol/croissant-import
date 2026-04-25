@@ -191,6 +191,59 @@ html,body{background:var(--navy);color:var(--text);font-family:var(--font);font-
 .kc{transition:all .18s ease}.kc:hover{transform:translateY(-2px);border-color:var(--border2);box-shadow:0 4px 16px rgba(0,0,0,.2)}
 @media print{.sidebar,.topbar{display:none!important}.main{margin:0}.content{padding:10px}}
 .inv-highlight{background:linear-gradient(135deg,rgba(212,165,116,.08),rgba(143,168,87,.08));border:1px solid rgba(212,165,116,.2);border-radius:8px;padding:16px;margin-bottom:16px}
+/* === SKU TABLE (v2.0 multi-product mix) === */
+.sku-block{background:var(--navy3);border:1px solid var(--border2);border-radius:8px;padding:14px;margin-bottom:14px}
+.sku-tools{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.sku-presets{display:flex;gap:6px;flex-wrap:wrap}
+.sku-preset-btn{padding:5px 11px;font-size:11px;background:var(--navy4);border:1px solid var(--border2);color:var(--text2);border-radius:6px;cursor:pointer;transition:.15s;font-family:var(--font)}
+.sku-preset-btn:hover{border-color:var(--teal);color:var(--teal)}
+.sku-add-btn{padding:5px 14px;font-size:12px;background:var(--teal);color:var(--navy);border:none;border-radius:6px;cursor:pointer;font-weight:600;font-family:var(--font);margin-left:auto}
+.sku-add-btn:disabled{background:var(--navy4);color:var(--text3);cursor:not-allowed}
+.sku-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.sku-tbl th{padding:6px 7px;font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.05em;text-align:right;border-bottom:1px solid var(--border2);background:var(--navy4);white-space:nowrap}
+.sku-tbl th:first-child{text-align:left}
+.sku-tbl th:last-child{text-align:center}
+.sku-tbl td{padding:5px 6px;border-bottom:1px solid var(--border);vertical-align:middle}
+.sku-tbl tr:last-child td{border:none}
+.sku-tbl input[type=text],.sku-tbl input[type=number]{width:100%;padding:4px 6px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:11px;text-align:right;outline:none;transition:.12s;min-width:50px}
+.sku-tbl td:first-child input{text-align:left;font-family:var(--font);font-size:12px}
+.sku-tbl input:focus{border-color:var(--teal);background:rgba(212,165,116,.08);color:#fff}
+.sku-share-row{display:flex;align-items:center;gap:6px}
+.sku-share-row input[type=range]{flex:1;height:3px;-webkit-appearance:none;background:var(--border2);border-radius:2px;outline:none;cursor:pointer;min-width:50px}
+.sku-share-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--gold);cursor:pointer}
+.sku-share-row .sku-share-val{font-family:var(--mono);font-size:11px;color:var(--gold);min-width:40px;text-align:right}
+.sku-del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px;opacity:.4;transition:.12s}
+.sku-del-btn:hover{opacity:1;color:var(--red)}
+.sku-mix-summary{margin-top:10px;padding:8px 11px;background:var(--navy4);border-radius:6px;font-size:11px;color:var(--text2);font-family:var(--mono);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.sku-mix-summary b{color:var(--teal)}
+.sku-mix-summary .warn{color:var(--gold)}
+.sku-mix-summary .ok{color:var(--green)}
+/* Маржа по SKU live-table */
+.sku-margin-wrap{margin-top:14px}
+.sku-margin-title{font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;padding:0 2px;display:flex;align-items:center;gap:8px}
+.sku-margin-title .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block}
+.sku-margin-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.sku-margin-tbl th{padding:7px 9px;font-size:10px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.05em;text-align:right;border-bottom:1px solid var(--border2);background:var(--navy4);white-space:nowrap}
+.sku-margin-tbl th:first-child{text-align:left}
+.sku-margin-tbl td{padding:6px 9px;border-bottom:1px solid var(--border);text-align:right;font-family:var(--mono);color:var(--text2);font-size:12px}
+.sku-margin-tbl td:first-child{text-align:left;font-family:var(--font);color:var(--text);font-weight:500}
+.sku-margin-tbl tr.tot td{background:var(--navy4);color:var(--text);font-weight:500;border-top:1px solid var(--border2)}
+.sku-margin-tbl .best{color:var(--green);font-weight:500}
+.sku-margin-tbl .worst{color:var(--red);font-weight:500}
+.sku-margin-tbl .badge-best{display:inline-block;padding:1px 6px;border-radius:3px;background:rgba(143,168,87,.15);color:var(--green);font-size:9px;margin-left:6px}
+.sku-margin-tbl .badge-worst{display:inline-block;padding:1px 6px;border-radius:3px;background:rgba(200,90,62,.15);color:var(--red);font-size:9px;margin-left:6px}
+.capacity-warn{margin-top:8px;padding:8px 11px;background:rgba(200,90,62,.12);border:1px solid rgba(200,90,62,.3);border-left:3px solid var(--red);border-radius:0 6px 6px 0;font-size:11px;color:var(--red);font-family:var(--mono)}
+/* Dashboard SKU view toggle */
+.dash-view-tgg{display:flex;background:var(--navy4);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-left:auto}
+.dash-view-tgg .tgb{padding:5px 13px;font-size:12px}
+.sku-card{background:var(--navy3);border:1px solid var(--border);border-radius:8px;padding:13px;border-top:3px solid var(--teal);margin-bottom:10px}
+.sku-card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.sku-card-name{font-size:13px;font-weight:500;color:var(--text)}
+.sku-card-share{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase}
+.sku-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:7px}
+.sku-card-stat{background:var(--navy4);border-radius:5px;padding:7px 9px}
+.sku-card-stat-l{font-size:9px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.sku-card-stat-v{font-size:14px;font-family:var(--mono);color:var(--teal);margin-top:2px}
 </style>
 </head>
 <body>
@@ -240,8 +293,11 @@ html,body{background:var(--navy);color:var(--text);font-family:var(--font);font-
   <div class="mob-overlay" id="mob-overlay" onclick="toggleMob()"></div>
   <div class="content">
     <div id="panel-dashboard" class="panel active">
-      <div class="ph"><h1>Ключевые показатели</h1><p>Импорт замороженной виеннуазери из Европы · Алматы &amp; Астана · горизонт 5 лет · 200→560 т/год</p></div>
-      <div class="dds-tb" style="margin-bottom:14px"><div class="tgg" id="dash-year-tabs"></div></div>
+      <div class="ph"><h1>Ключевые показатели</h1><p>Импорт замороженной виеннуазери из Европы · Алматы &amp; Астана · горизонт 5 лет · мульти-SKU ассортимент</p></div>
+      <div class="dds-tb" style="margin-bottom:14px">
+        <div class="tgg" id="dash-year-tabs"></div>
+        <div class="tgg dash-view-tgg" id="dash-view-tgg"></div>
+      </div>
       <div class="kpi-grid" id="kpi-grid"></div>
       <div class="cg">
         <div class="cb"><div class="ct">Выручка и EBITDA по годам, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--teal)"></span>Выручка</span><span><span class="lsq" style="background:var(--green)"></span>EBITDA</span></div><div class="cw"><canvas id="c-rev"></canvas></div></div>
@@ -249,6 +305,7 @@ html,body{background:var(--navy);color:var(--text);font-family:var(--font);font-
         <div class="cb"><div class="ct" id="opex-chart-title">Структура OPEX, млн тг</div><div class="leg" id="pie-leg"></div><div class="cw"><canvas id="c-pie"></canvas></div></div>
         <div class="cb"><div class="ct">Себестоимость 1 кг, тг/кг</div><div class="leg"><span><span class="lsq" style="background:var(--gold)"></span>Перем.</span><span><span class="lsq" style="background:var(--teal)"></span>Пост.</span><span><span class="lsq" style="background:var(--muted)"></span>Аморт.</span></div><div class="cw"><canvas id="c-se"></canvas></div></div>
       </div>
+      <div id="dash-sku-breakdown" style="margin-top:18px"></div>
     </div>
 
     <div id="panel-assumptions" class="panel">
@@ -351,24 +408,60 @@ const MLN=1e6,YRS=['2026','2027','2028','2029','2030'],MONTHS=['Янв','Фев'
 const charts={};let ddsMode='auto';let plYear=0;
 
 // === STAGED ASSUMPTIONS (save button pattern) ===
-// Импорт замороженной виеннуазери (круассаны, бриоши, pain au chocolat) из ЕС в РК.
-// `kurs` — в модели используется как EUR/KZT (имя переменной сохранено от оригинала для совместимости render-функций).
-// `mosh` — базовый годовой объём импорта в КГ; `load[i]` — множитель к базе по годам (рост продаж).
-// `ph2` — средняя отпускная цена, тг/кг (опт для сетей/HoReCa/собственных точек).
-// `psera_usd` — цена закупки у завода-производителя, €/кг (FCA Europe).
-// `pel` — стоимость фрахта до границы РК (рефрижератор), €/кг.
-// `pvoda` — логистика внутри РК (склад → полка), тг/кг.
-// `pteplo` — стоимость хранения, тг/кг.   `vteplo` — средний срок хранения, дней.
-// `rsera` — таможенная пошлина РК (ТН ВЭД 1905).  `rel` — НДС при ввозе (возвратный).  `rvoda` — потери по сроку годности.
-const A_DEFAULT={kurs:580,ikurs:0.05,wacc:0.20,inf:0.09,mosh:200000,load:[0.5,1.0,1.6,2.2,2.8],
-  ph2:2900,ih2:0.07,ph2_exp_usd:0,ih2_exp:0,psera_usd:3.2,isera:0.04,pel:0.38,iel:0.03,pvoda:45,pteplo:30,vteplo:30,
-  rsera:0.125,rel:0.12,rvoda:0.035,
+// v2.0 multi-SKU модель: бизнес возит ассортимент разных продуктов в одной фуре.
+// Глобально: курс, инфляция, фрахт, пошлина, склад, ФОТ, CAPEX — общие на бизнес.
+// Per-SKU: цена тг/шт, закупка €/кг, вес г, потери %, доля в фуре % (см. SKU_DEFAULT).
+// Объём кг каждого SKU = trucks_per_year × truck_kg × sku.share × load[i].
+// Старые поля (mosh, ph2, psera_usd, pel, rvoda) сохранены для совместимости с легаси cm() и
+// render-функциями — теперь они представляют взвешенные средние по миксу SKU.
+const A_DEFAULT={kurs:580,ikurs:0.05,wacc:0.20,inf:0.09,
+  trucks_per_year:10,truck_kg:20000,
+  mosh:200000,load:[0.5,1.0,1.6,2.2,2.8],
+  ph2:2900,ih2:0.07,ph2_exp_usd:0,ih2_exp:0,psera_usd:4.0,isera:0.04,pel:0.38,iel:0.03,pvoda:45,pteplo:30,vteplo:30,
+  rsera:0.125,rel:0.12,rvoda:0.038,
   capex_usd:0.18,capex_kzt:142,amort_spi:7,nrabot:0.115,
   to:4,strah:3,adm:14,ecol:0,nimush:0,zeml:0,okhrana:6,kpn:0.20,
   export_share:0};
+
+// === SKU ASSORTMENT (multi-product mix) ===
+const SKU_KEY='croissant_skus_v2';
+const SKU_LIMIT=8;
+const SKU_DEFAULT=[
+  {id:'sku_classic',  name:'Круассан классик',     price_kzt_unit:280, purchase_eur_kg:4.0, weight_g:80,  loss_pct:0.035, share:0.60},
+  {id:'sku_chocolate',name:'Круассан с шоколадом', price_kzt_unit:350, purchase_eur_kg:4.8, weight_g:90,  loss_pct:0.040, share:0.25},
+  {id:'sku_pastry',   name:'Слойка фруктовая',     price_kzt_unit:320, purchase_eur_kg:4.5, weight_g:100, loss_pct:0.045, share:0.15},
+];
+// Three preset mixes for the "play with the mix" UX
+const SKU_PRESETS={
+  classic:{label:'Только круассаны',skus:[
+    {id:'sku_classic',name:'Круассан классик',price_kzt_unit:280,purchase_eur_kg:4.0,weight_g:80,loss_pct:0.035,share:1.00},
+  ]},
+  balanced:{label:'Сбалансированный',skus:[
+    {id:'sku_classic',  name:'Круассан классик',     price_kzt_unit:280, purchase_eur_kg:4.0, weight_g:80,  loss_pct:0.035, share:0.60},
+    {id:'sku_chocolate',name:'Круассан с шоколадом', price_kzt_unit:350, purchase_eur_kg:4.8, weight_g:90,  loss_pct:0.040, share:0.25},
+    {id:'sku_pastry',   name:'Слойка фруктовая',     price_kzt_unit:320, purchase_eur_kg:4.5, weight_g:100, loss_pct:0.045, share:0.15},
+  ]},
+  premium:{label:'Премиум-микс',skus:[
+    {id:'sku_classic',   name:'Круассан классик',         price_kzt_unit:280, purchase_eur_kg:4.0, weight_g:80, loss_pct:0.035, share:0.40},
+    {id:'sku_chocolate', name:'Круассан с шоколадом',     price_kzt_unit:350, purchase_eur_kg:4.8, weight_g:90, loss_pct:0.040, share:0.25},
+    {id:'sku_almond',    name:'Круассан с миндалём',      price_kzt_unit:420, purchase_eur_kg:6.2, weight_g:95, loss_pct:0.045, share:0.20},
+    {id:'sku_paris',     name:'Pain au chocolat',         price_kzt_unit:380, purchase_eur_kg:5.5, weight_g:85, loss_pct:0.040, share:0.10},
+    {id:'sku_brioche',   name:'Брошь с кремом',           price_kzt_unit:480, purchase_eur_kg:7.0, weight_g:70, loss_pct:0.050, share:0.05},
+  ]},
+};
+function skusLoad(){try{const s=JSON.parse(localStorage.getItem(SKU_KEY));if(Array.isArray(s)&&s.length)return s;}catch(e){}return JSON.parse(JSON.stringify(SKU_DEFAULT));}
+function skusSave(){try{localStorage.setItem(SKU_KEY,JSON.stringify(A.skus));}catch(e){}}
+// Auto-normalize so that sum(share) === 1.0 — UI guarantees consistency for the user
+function skusNormalize(skus){
+  const sum=skus.reduce((s,k)=>s+(k.share||0),0);
+  if(sum<=0){const eq=1/Math.max(skus.length,1);skus.forEach(k=>k.share=eq);return;}
+  skus.forEach(k=>k.share=k.share/sum);
+}
+
 // A = committed (used by all calculations), S = staged (edited in UI, not yet saved)
-let A={...A_DEFAULT,load:[...A_DEFAULT.load]};
-let S={...A_DEFAULT,load:[...A_DEFAULT.load]};
+let A={...A_DEFAULT,load:[...A_DEFAULT.load],skus:skusLoad()};
+let S={...A_DEFAULT,load:[...A_DEFAULT.load],skus:JSON.parse(JSON.stringify(A.skus))};
+skusNormalize(A.skus);skusNormalize(S.skus);
 
 // === HR STATE (mutable, persisted) ===
 const HR_KEY='croissant_hr_v1';
@@ -466,6 +559,77 @@ function cm(a){
   const np=YRS.map((_,i)=>et[i]-kp[i]);
   return{vol,rev,rH2,rH2_dom,rH2_exp,rHt,vS,vE,vW,vT,fF,fT,am,oc,eb,et,kp,np,ph2y,psy,pey,ky,capexM,amort,fot};
 }
+
+// ═══════════════════════════════════════════
+// MULTI-SKU ENGINE (v2.0) — cmSku() per-product, cmMulti() aggregator
+// ═══════════════════════════════════════════
+// cmSku(): расчёт ОДНОГО SKU. Без общих расходов (FOT/админ/CAPEX/амортизация — добавляются один раз в cmMulti).
+// vol_kg = trucks_per_year × truck_kg × sku.share × load[i] (рост по годам общий для всего бизнеса).
+// price_kzt_kg = price_kzt_unit / weight_g × 1000 (конвертация шт → кг).
+// Формулы переменных затрат идентичны cm() — закупка + фрахт + пошлина + 1.5% брокер + лог.РК + хранение.
+// Списания учтены в выручке (продаём только vol×(1−loss)), но затраты считаются от полного vol.
+function cmSku(a,sku){
+  const ky=YRS.map((_,i)=>a.kurs*Math.pow(1+a.ikurs,i));
+  const baseKg=a.trucks_per_year*a.truck_kg*sku.share;
+  const vol_kg=YRS.map((_,i)=>baseKg*a.load[i]);
+  const units=vol_kg.map(v=>v/sku.weight_g*1000);
+  const ph2_kg=sku.price_kzt_unit/sku.weight_g*1000;
+  const ph2y=YRS.map((_,i)=>ph2_kg*Math.pow(1+a.ih2,i));
+  const psy=YRS.map((_,i)=>sku.purchase_eur_kg*ky[i]*Math.pow(1+a.isera,i));
+  const pey=YRS.map((_,i)=>a.pel*ky[i]*Math.pow(1+a.iel,i));
+  const sold=YRS.map((_,i)=>vol_kg[i]*(1-sku.loss_pct));
+  const rev=YRS.map((_,i)=>sold[i]*ph2y[i]);
+  const vS=YRS.map((_,i)=>vol_kg[i]*psy[i]);
+  const fobPerKg=YRS.map((_,i)=>psy[i]+pey[i]);
+  const vE=YRS.map((_,i)=>vol_kg[i]*(pey[i]+fobPerKg[i]*a.rsera+fobPerKg[i]*0.015));
+  const vW=YRS.map((_,i)=>vol_kg[i]*(a.pvoda*Math.pow(1+a.inf,i)+a.pteplo*(a.vteplo/30)*Math.pow(1+a.inf,i)));
+  const vT=YRS.map((_,i)=>vS[i]+vE[i]+vW[i]);
+  // Контрибуция (без распределения общих) — главная метрика SKU
+  const cm=YRS.map((_,i)=>rev[i]-vT[i]);
+  const cmPct=YRS.map((_,i)=>rev[i]>0?cm[i]/rev[i]:0);
+  const cmPerKg=YRS.map((_,i)=>vol_kg[i]>0?cm[i]/vol_kg[i]:0); // 🔑 ключ к оптимизации микса
+  const cmPerUnit=YRS.map((_,i)=>units[i]>0?cm[i]/units[i]:0);
+  return{name:sku.name,id:sku.id,sku,vol_kg,units,sold,rev,vS,vE,vW,vT,ph2y,psy,pey,ky,cm,cmPct,cmPerKg,cmPerUnit};
+}
+
+// cmMulti(): главная функция v2.0. Агрегирует все SKU + добавляет общие постоянные/CAPEX один раз.
+// Возвращает объект, СОВМЕСТИМЫЙ с cm(): те же ключи (vol, rev, vT, fT, am, ...) — поэтому
+// все старые render-функции (renderDashboard, renderPL, ...) работают без изменений, читая total.
+// Дополнительно: perSku[] — массив детализированных результатов по каждому SKU.
+function cmMulti(a){
+  const fot=hrTotalFot();
+  const ky=YRS.map((_,i)=>a.kurs*Math.pow(1+a.ikurs,i));
+  const capexM=a.capex_usd*a.kurs+a.capex_kzt;
+  const amort=capexM/a.amort_spi;
+  const am=YRS.map(()=>amort*MLN);
+  const fF=YRS.map((_,i)=>fot*(1+a.nrabot)*Math.pow(1+a.inf,i));
+  const fT=YRS.map((_,i)=>fF[i]+(a.to+a.strah+a.ecol+a.zeml)*MLN+a.adm*MLN*Math.pow(1+a.inf,i)+a.okhrana*MLN*Math.pow(1+a.inf,i));
+
+  const skusList=(a.skus&&a.skus.length)?a.skus:[{id:'_dflt',name:'Продукт',price_kzt_unit:a.ph2*0.08,purchase_eur_kg:a.psera_usd,weight_g:80,loss_pct:a.rvoda,share:1}];
+  const perSku=skusList.map(sku=>cmSku(a,sku));
+
+  const sumArr=key=>YRS.map((_,i)=>perSku.reduce((s,p)=>s+p[key][i],0));
+  const vol=sumArr('vol_kg');
+  const units=sumArr('units');
+  const rev=sumArr('rev');
+  const vS=sumArr('vS');
+  const vE=sumArr('vE');
+  const vW=sumArr('vW');
+  const vT=sumArr('vT');
+  const oc=YRS.map((_,i)=>vT[i]+fT[i]);
+  const eb=YRS.map((_,i)=>rev[i]-oc[i]);
+  const et=YRS.map((_,i)=>eb[i]-am[i]);
+  const kp=YRS.map((_,i)=>Math.max(et[i]*a.kpn,0));
+  const np=YRS.map((_,i)=>et[i]-kp[i]);
+  // Взвешенные средние тг/кг (для совместимости с render'ами cm())
+  const ph2y=YRS.map((_,i)=>vol[i]>0?rev[i]/(vol[i]*(1-((a.skus||[]).reduce((s,k)=>s+k.loss_pct*k.share,0)||0))):0);
+  const psy=YRS.map((_,i)=>vol[i]>0?vS[i]/vol[i]:0);
+  const pey=YRS.map((_,i)=>vol[i]>0?vE[i]/vol[i]:0);
+  // Совместимость со старым cm()-API
+  const rH2=rev,rH2_dom=rev,rH2_exp=YRS.map(()=>0),rHt=YRS.map(()=>0);
+  return{perSku,vol,units,rev,rH2,rH2_dom,rH2_exp,rHt,vS,vE,vW,vT,fF,fT,am,oc,eb,et,kp,np,ph2y,psy,pey,ky,capexM,amort,fot};
+}
+
 function autoFlows(m){
   // BUG1 FIX: capex is already captured in f._c25 (year 2025), do not double-count in operating years
   const capexDist=YRS.map(()=>0);
@@ -474,7 +638,7 @@ function autoFlows(m){
     capex_fl:capexDist,wc:[0,-50,-80,-20,-20],fin_in:YRS.map(()=>0),fin_out:YRS.map(()=>0)};
 }
 function flows(){
-  const m=cm(A),au=autoFlows(m);const r={};
+  const m=cmMulti(A),au=autoFlows(m);const r={};
   ROWS.forEach(row=>{r[row.k]=YRS.map((_,i)=>ddsMode==='manual'&&ov[row.k][i]!==null?ov[row.k][i]:au[row.k][i]);});
   r._c25=-m.capexM;return r;
 }
@@ -518,7 +682,7 @@ function mkC(id,type,data,opts={}){
   charts[id]=new Chart(ctx,{type,data,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:tick,grid:grid},y:{ticks:tick,grid:grid}},...opts}});
 }
 function getMetrics(){
-  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);
+  const m=cmMulti(A);const f=flows();const{all,fcf}=fcfCalc(f);
   const allTg=all.map(v=>v*MLN);
   const NPV=npvC(A.wacc,allTg),IRR=irr(allTg),PI=1+NPV/(m.capexM*MLN);
   // BUG2 FIX: payback was overstated by 1 year — use i (not i+1) as base years
@@ -529,7 +693,12 @@ function getMetrics(){
 
 // === SAVE BUTTON ===
 function saveAssumptions(){
-  A={...S,load:[...S.load]};
+  // v2.0: deep-copy SKU + автонормализация долей перед коммитом
+  const skusCopy=JSON.parse(JSON.stringify(S.skus||[]));
+  skusNormalize(skusCopy);
+  A={...S,load:[...S.load],skus:skusCopy};
+  S.skus=JSON.parse(JSON.stringify(skusCopy));
+  skusSave();
   const btn=document.getElementById('save-btn');
   // BUG11 FIX: removed redundant textContent change; CSS ::after adds checkmark
   btn.classList.add('saved');
@@ -575,8 +744,9 @@ function renderBar(){
 
 // === DASHBOARD ===
 let dashYear=2; // default: index 2 = 2028
+let dashView='total'; // 'total' (бизнес целиком) | 'sku' (по продуктам)
 function renderDashboard(){
-  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
+  const m=cmMulti(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
   const NPV=npvC(A.wacc,allTg),IRR=irr(allTg);
   const yi=dashYear;const yr=YRS[yi];
   // BUG5 FIX: BEP uses total revenue per ton (not just domestic H2SO4 price)
@@ -586,18 +756,20 @@ function renderDashboard(){
   let pp=null,cum=allTg[0];
   fcf.forEach((v,i)=>{const prev=cum;cum+=v*MLN;if(cum>=0&&pp===null&&v*MLN!==0)pp=i+(-prev)/(v*MLN);});
 
-  // Year tabs
+  // Year tabs + view toggle (общий бизнес ↔ по продуктам)
   document.getElementById('dash-year-tabs').innerHTML=YRS.map((y,i)=>`<button class="tgb${i===dashYear?' active':''}" onclick="dashYear=${i};renderDashboard()">${y}</button>`).join('');
+  const viewTgg=document.getElementById('dash-view-tgg');
+  if(viewTgg)viewTgg.innerHTML=[['total','Общий бизнес'],['sku','По продуктам']].map(([id,l])=>`<button class="tgb${dashView===id?' active':''}" onclick="dashView='${id}';renderDashboard()">${l}</button>`).join('');
 
   const kpis=[
-    {l:'Объём '+yr,v:fmt(Math.round(m.vol[yi]/1000))+' т',s:fmt(Math.round(m.vol[yi]/1000))+' 000 кг/год',c:''},
+    {l:'Объём '+yr,v:fmt(Math.round((m.units[yi]||0)/1000))+'K шт',s:fmt(Math.round(m.vol[yi]/1000))+' т / '+(m.perSku?m.perSku.length:0)+' SKU',c:''},
     {l:'Выручка ('+yr+')',v:fmtM(m.rev[yi]),s:'€'+fmt(Math.round(m.rev[yi]/m.ky[yi]/1000))+'K',c:''},
     {l:'EBITDA ('+yr+')',v:fmtM(m.eb[yi]),s:fmtP(m.eb[yi]/m.rev[yi]),c:'g'},
     {l:'Чистая прибыль ('+yr+')',v:fmtM(m.np[yi]),s:fmtP(m.np[yi]/m.rev[yi]),c:m.np[yi]>0?'g':'r'},
     {l:'NPV',v:fmtM(NPV),s:'€'+fmt(Math.round(NPV/MLN/A.kurs*1000))+' тыс',c:NPV>0?'g':'r'},
     {l:'IRR',v:fmtP(IRR),s:'vs WACC '+fmtP(A.wacc),c:IRR>A.wacc?'g':'r'},
     {l:'Окупаемость',v:pp?pp.toFixed(1)+' лет':'—',s:'простой',c:''},
-    {l:'BEP ('+yr+')',v:isFinite(bepT)&&bepT>0?fmtP(bepT/A.mosh):'—',s:isFinite(bepT)&&bepT>0?'запас '+fmtP(1-bepT/A.mosh):'—',c:'a'},
+    {l:'BEP ('+yr+')',v:isFinite(bepT)&&bepT>0?fmtP(bepT/(A.trucks_per_year*A.truck_kg)):'—',s:isFinite(bepT)&&bepT>0?'запас '+fmtP(1-bepT/(A.trucks_per_year*A.truck_kg)):'—',c:'a'},
     {l:'CAPEX',v:fmt(Math.round(m.capexM))+' млн',s:'€'+fmt(Math.round(m.capexM/A.kurs*1000))+'K',c:'w'},
     {l:'Команда',v:hrTotalPeople()+' чел',s:fmt(Math.round(m.fot/MLN))+' млн ФОТ',c:''},
     {l:'Курс '+yr,v:fmt(Math.round(m.ky[yi]))+' тг/€',s:'девальв. '+fmtP(A.ikurs)+'/год',c:''},
@@ -622,6 +794,222 @@ function renderDashboard(){
   mkC('c-pie','doughnut',{labels:pL,datasets:[{data:pV,backgroundColor:pC,borderWidth:0}]},{cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw+' млн'}}}});
   const sV=YRS.map((_,i)=>Math.round(m.vT[i]/m.vol[i])),sF=YRS.map((_,i)=>Math.round(m.fT[i]/m.vol[i])),sA=YRS.map((_,i)=>Math.round(m.am[i]/m.vol[i]));
   mkC('c-se','bar',{labels:YRS,datasets:[{data:sV,backgroundColor:YRS.map((_,i)=>i===yi?'rgba(232,192,119,1)':'rgba(232,192,119,.4)'),stack:'s'},{data:sF,backgroundColor:YRS.map((_,i)=>i===yi?'rgba(212,165,116,1)':'rgba(212,165,116,.4)'),stack:'s'},{data:sA,backgroundColor:YRS.map((_,i)=>i===yi?'rgba(74,98,128,1)':'rgba(74,98,128,.4)'),stack:'s'}]},{scales:{x:{stacked:true,ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{stacked:true,ticks:{color:'#7A6850',callback:v=>v+' тг'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+
+  // === Разбивка по SKU (v2.0) ===
+  renderDashSkuBreakdown(m,yi);
+}
+
+// SKU-разбивка под основным дашбордом. Показывает stacked bar выручки/EBITDA по SKU и карточки.
+function renderDashSkuBreakdown(m,yi){
+  const wrap=document.getElementById('dash-sku-breakdown');
+  if(!wrap||!m.perSku||!m.perSku.length){if(wrap)wrap.innerHTML='';return;}
+  const yr=YRS[yi];
+  // Палитра под SKU (тёплая, чтобы консистентно с темой)
+  const PAL=['rgba(212,165,116,.85)','rgba(232,192,119,.85)','rgba(143,168,87,.85)','rgba(184,152,120,.85)','rgba(166,122,75,.85)','rgba(200,90,62,.85)','rgba(122,104,80,.85)','rgba(244,236,216,.4)'];
+  const PAL_S=['#D4A574','#E8C077','#8FA857','#B89878','#A67A4B','#C85A3E','#7A6850','#F4ECD8'];
+
+  let html='';
+
+  if(dashView==='sku'){
+    // === Режим «По продуктам» — карточки + stacked bars ===
+    // Карточки SKU (детали для выбранного года)
+    html+=`<div class="ph" style="margin-bottom:12px"><h1 style="font-size:15px">Разбивка по продуктам · ${yr}</h1><p>Каждый SKU: объём, выручка, контрибуция (без учёта общих расходов)</p></div>`;
+    html+=m.perSku.map((p,idx)=>{
+      const cmgPK=Math.round(p.cmPerKg[yi]);
+      const allCmKg=m.perSku.map(x=>x.cmPerKg[yi]);
+      const isBest=allCmKg.length>1&&p.cmPerKg[yi]===Math.max(...allCmKg);
+      const isWorst=allCmKg.length>1&&p.cmPerKg[yi]===Math.min(...allCmKg)&&Math.max(...allCmKg)!==Math.min(...allCmKg);
+      const badge=isBest?'<span style="margin-left:8px;padding:2px 7px;border-radius:3px;background:rgba(143,168,87,.18);color:var(--green);font-size:10px;font-family:var(--mono)">★ лучший по марже/кг</span>':isWorst?'<span style="margin-left:8px;padding:2px 7px;border-radius:3px;background:rgba(200,90,62,.15);color:var(--red);font-size:10px;font-family:var(--mono)">слабый по марже/кг</span>':'';
+      return `<div class="sku-card" style="border-top-color:${PAL_S[idx%PAL_S.length]}">
+        <div class="sku-card-head"><div class="sku-card-name">${p.name}${badge}</div><div class="sku-card-share">${Math.round((p.sku.share||0)*100)}% фуры · ${Math.round(p.sku.weight_g)}г/шт · ${fmt(p.sku.price_kzt_unit)} тг/шт</div></div>
+        <div class="sku-card-grid">
+          <div class="sku-card-stat"><div class="sku-card-stat-l">Шт/год</div><div class="sku-card-stat-v">${fmt(Math.round(p.units[yi]))}</div></div>
+          <div class="sku-card-stat"><div class="sku-card-stat-l">Объём, кг</div><div class="sku-card-stat-v">${fmt(Math.round(p.vol_kg[yi]))}</div></div>
+          <div class="sku-card-stat"><div class="sku-card-stat-l">Выручка</div><div class="sku-card-stat-v">${fmtM(p.rev[yi])}</div></div>
+          <div class="sku-card-stat"><div class="sku-card-stat-l">Перем. затраты</div><div class="sku-card-stat-v" style="color:var(--gold)">${fmtM(p.vT[yi])}</div></div>
+          <div class="sku-card-stat"><div class="sku-card-stat-l">Маржа (CM)</div><div class="sku-card-stat-v" style="color:${p.cm[yi]>0?'var(--green)':'var(--red)'}">${fmtM(p.cm[yi])}</div></div>
+          <div class="sku-card-stat"><div class="sku-card-stat-l">Маржа %</div><div class="sku-card-stat-v">${fmtP(p.cmPct[yi])}</div></div>
+          <div class="sku-card-stat" style="background:rgba(212,165,116,.12);border:1px solid rgba(212,165,116,.25)"><div class="sku-card-stat-l">🔑 Маржа тг/кг</div><div class="sku-card-stat-v" style="color:${isBest?'var(--green)':isWorst?'var(--red)':'var(--teal)'}">${fmt(cmgPK)}</div></div>
+          <div class="sku-card-stat"><div class="sku-card-stat-l">Маржа тг/шт</div><div class="sku-card-stat-v">${fmt(Math.round(p.cmPerUnit[yi]))}</div></div>
+        </div>
+      </div>`;
+    }).join('');
+    // Под карточками — stacked bars выручки и контрибуции по годам
+    html+=`<div class="cg" style="margin-top:14px">
+      <div class="cb"><div class="ct">Выручка по SKU, млн тг</div><div class="leg">${m.perSku.map((p,i)=>`<span><span class="lsq" style="background:${PAL_S[i%PAL_S.length]}"></span>${p.name}</span>`).join('')}</div><div class="cw tall"><canvas id="c-sku-rev"></canvas></div></div>
+      <div class="cb"><div class="ct">Маржа (CM) по SKU, млн тг</div><div class="leg">${m.perSku.map((p,i)=>`<span><span class="lsq" style="background:${PAL_S[i%PAL_S.length]}"></span>${p.name}</span>`).join('')}</div><div class="cw tall"><canvas id="c-sku-cm"></canvas></div></div>
+    </div>`;
+  } else {
+    // === Режим «Общий бизнес» — компактная разбивка для контекста ===
+    // Просто маленькая таблица + 1 doughnut с долями выручки по SKU
+    html+=`<div class="ph" style="margin-bottom:12px"><h1 style="font-size:14px;color:var(--text2)">Микс ассортимента · ${yr}</h1><p style="font-size:11px">Доля каждого SKU в общей выручке. Подробнее — переключи на «По продуктам».</p></div>`;
+    html+=`<div class="cg" style="grid-template-columns:1fr 1fr">
+      <div class="cb"><div class="ct">Доля SKU в выручке ${yr}</div><div class="cw"><canvas id="c-sku-mix"></canvas></div></div>
+      <div class="cb"><div class="ct">Маржа тг/кг по SKU 🔑</div><div class="leg">${m.perSku.map((p,i)=>`<span><span class="lsq" style="background:${PAL_S[i%PAL_S.length]}"></span>${p.name}</span>`).join('')}</div><div class="cw"><canvas id="c-sku-perkg"></canvas></div></div>
+    </div>`;
+  }
+
+  wrap.innerHTML=html;
+
+  // Charts (после рендера DOM)
+  setTimeout(()=>{
+    if(dashView==='sku'){
+      mkC('c-sku-rev','bar',{labels:YRS,datasets:m.perSku.map((p,i)=>({label:p.name,data:p.rev.map(v=>Math.round(v/MLN)),backgroundColor:PAL[i%PAL.length],stack:'s',borderRadius:2}))},{scales:{x:{stacked:true,ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{stacked:true,ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+      mkC('c-sku-cm','bar',{labels:YRS,datasets:m.perSku.map((p,i)=>({label:p.name,data:p.cm.map(v=>Math.round(v/MLN)),backgroundColor:PAL[i%PAL.length],stack:'s',borderRadius:2}))},{scales:{x:{stacked:true,ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{stacked:true,ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
+    } else {
+      const mix=m.perSku.map(p=>Math.round(p.rev[yi]/MLN));
+      mkC('c-sku-mix','doughnut',{labels:m.perSku.map(p=>p.name),datasets:[{data:mix,backgroundColor:m.perSku.map((_,i)=>PAL[i%PAL.length]),borderWidth:0}]},{cutout:'62%',plugins:{legend:{display:true,position:'right',labels:{color:'#BBA888',font:{size:11},padding:8,boxWidth:10}},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw+' млн'}}}});
+      mkC('c-sku-perkg','bar',{labels:m.perSku.map(p=>p.name),datasets:[{data:m.perSku.map(p=>Math.round(p.cmPerKg[yi])),backgroundColor:m.perSku.map((_,i)=>PAL[i%PAL.length]),borderRadius:3}]},{indexAxis:'y',scales:{x:{ticks:{color:'#7A6850',callback:v=>v+' тг'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#BBA888',font:{size:10}},grid:{display:false}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' тг/кг'}}}});
+    }
+  },50);
+}
+
+// === SKU MANAGEMENT (v2.0) — assortment table + live margin ===
+// Все операции работают со S.skus (staged). Save-button копирует S.skus → A.skus.
+function renderSkuBlockHtml(){
+  const skus=S.skus||[];
+  const sumShare=skus.reduce((s,k)=>s+(k.share||0),0);
+  const sharePct=Math.round(sumShare*100);
+  const shareCls=Math.abs(sumShare-1)<0.001?'ok':'warn';
+  const totalKg=S.trucks_per_year*S.truck_kg;
+  const rows=skus.map((sk,i)=>{
+    const sharePctI=Math.round((sk.share||0)*100);
+    return `<tr>
+      <td><input type="text" value="${sk.name||''}" oninput="skuUpdate(${i},'name',this.value)"></td>
+      <td><input type="number" min="0" step="10" value="${sk.price_kzt_unit||0}" oninput="skuUpdate(${i},'price_kzt_unit',+this.value);skuRebuildMargins()"></td>
+      <td><input type="number" min="0" step="0.1" value="${sk.purchase_eur_kg||0}" oninput="skuUpdate(${i},'purchase_eur_kg',+this.value);skuRebuildMargins()"></td>
+      <td><input type="number" min="1" step="1" value="${sk.weight_g||0}" oninput="skuUpdate(${i},'weight_g',+this.value);skuRebuildMargins()"></td>
+      <td><input type="number" min="0" max="50" step="0.5" value="${((sk.loss_pct||0)*100).toFixed(1)}" oninput="skuUpdate(${i},'loss_pct',+this.value/100);skuRebuildMargins()"></td>
+      <td><div class="sku-share-row">
+        <input type="range" min="0" max="100" step="1" value="${sharePctI}" oninput="skuShareChange(${i},+this.value)">
+        <span class="sku-share-val" id="sku-share-v-${i}">${sharePctI}%</span>
+      </div></td>
+      <td style="text-align:center"><button class="sku-del-btn" onclick="skuDel(${i})" title="Удалить" ${skus.length<=1?'disabled style="opacity:.15;cursor:not-allowed"':''}>✕</button></td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="isec"><h3>Ассортимент — что везём в фуре</h3>
+    <div class="sku-block">
+      <div class="sku-tools">
+        <div class="sku-presets">
+          ${Object.keys(SKU_PRESETS).map(k=>`<button class="sku-preset-btn" onclick="skuApplyPreset('${k}')">${SKU_PRESETS[k].label}</button>`).join('')}
+        </div>
+        <button class="sku-add-btn" onclick="skuAdd()" ${skus.length>=SKU_LIMIT?'disabled':''} title="${skus.length>=SKU_LIMIT?'Достигнут лимит '+SKU_LIMIT+' SKU':'Добавить продукт'}">+ SKU</button>
+      </div>
+      <table class="sku-tbl">
+        <thead><tr><th>Продукт</th><th>Цена тг/шт</th><th>Закупка €/кг</th><th>Вес, г</th><th>Потери, %</th><th>Доля в фуре</th><th></th></tr></thead>
+        <tbody id="sku-tbody">${rows}</tbody>
+      </table>
+      <div class="sku-mix-summary">
+        <span>Загрузка: <b>${fmt(totalKg)} кг/фура</b> × <b>${S.trucks_per_year} фур/год</b> = <b>${fmt(totalKg*S.trucks_per_year)} кг/год</b> базы</span>
+        <span>Сумма долей: <span class="${shareCls}">${sharePct}%</span> ${Math.abs(sumShare-1)<0.001?'✓':'(нормализуется при сохранении)'}</span>
+      </div>
+      ${(totalKg*S.trucks_per_year>500000)?`<div class="capacity-warn">⚠ Объём ${fmt(Math.round(totalKg*S.trucks_per_year/1000))} т/год — нужен холодсклад >500 м² и 3+ рефрижератора. Заложенный CAPEX (2 фургона) может не справиться.</div>`:''}
+      ${(S.trucks_per_year<3)?`<div class="capacity-warn">⚠ Меньше 3 фур/год = разовые поставки. Поставщик ЕС обычно требует регулярный объём ≥10 т/мес.</div>`:''}
+      <div class="sku-margin-wrap">
+        <div class="sku-margin-title"><span class="live-dot"></span>Маржа по продуктам · год 1 (live)</div>
+        <table class="sku-margin-tbl" id="sku-margin-tbl"><tbody></tbody></table>
+      </div>
+    </div>
+  </div>`;
+}
+
+// Пересчёт live-таблицы маржи (использует S.skus, год 1 = индекс 0)
+function skuRebuildMargins(){
+  const tbl=document.getElementById('sku-margin-tbl');
+  if(!tbl)return;
+  // Нормализованная копия для расчёта (не модифицируем S.skus)
+  const skus=S.skus.map(s=>({...s}));
+  const sumShare=skus.reduce((s,k)=>s+(k.share||0),0);
+  const norm=sumShare>0?skus.map(s=>({...s,share:s.share/sumShare})):skus;
+  const tmpA={...S,load:[...S.load],skus:norm};
+  // Year-1 (index 0) контрибуция per-SKU
+  const sk_calc=norm.map(sku=>{
+    const r=cmSku(tmpA,sku);
+    return{name:sku.name,sku,units:r.units[0],rev:r.rev[0],vT:r.vT[0],cm:r.cm[0],cmPct:r.cmPct[0],cmPerKg:r.cmPerKg[0],cmPerUnit:r.cmPerUnit[0]};
+  });
+  // Best/worst по cmPerKg (главный критерий: фура весовая)
+  const cmKgs=sk_calc.map(s=>s.cmPerKg);
+  const maxKg=Math.max(...cmKgs),minKg=Math.min(...cmKgs);
+  let html='<thead><tr><th>SKU</th><th>Шт/год</th><th>Выручка</th><th>Маржа</th><th>Маржа %</th><th>Маржа тг/кг 🔑</th></tr></thead><tbody>';
+  sk_calc.forEach(s=>{
+    const isBest=sk_calc.length>1&&s.cmPerKg===maxKg;
+    const isWorst=sk_calc.length>1&&s.cmPerKg===minKg&&maxKg!==minKg;
+    const badge=isBest?'<span class="badge-best">лучший</span>':isWorst?'<span class="badge-worst">худший</span>':'';
+    const cls=isBest?'best':isWorst?'worst':'';
+    html+=`<tr>
+      <td>${s.name||'—'}${badge}</td>
+      <td>${fmt(Math.round(s.units))}</td>
+      <td>${fmtR(Math.round(s.rev/1000))}K тг</td>
+      <td class="${s.cm<0?'worst':''}">${fmtR(Math.round(s.cm/MLN))} млн</td>
+      <td>${fmtP(s.cmPct)}</td>
+      <td class="${cls}">${fmt(Math.round(s.cmPerKg))}</td>
+    </tr>`;
+  });
+  // Итог
+  const totRev=sk_calc.reduce((s,x)=>s+x.rev,0);
+  const totCm=sk_calc.reduce((s,x)=>s+x.cm,0);
+  const totUnits=sk_calc.reduce((s,x)=>s+x.units,0);
+  const totKg=norm.reduce((s,k)=>s+S.trucks_per_year*S.truck_kg*k.share*S.load[0],0);
+  const avgPerKg=totKg>0?totCm/totKg:0;
+  html+=`<tr class="tot"><td>Итого микса</td><td>${fmt(Math.round(totUnits))}</td><td>${fmtR(Math.round(totRev/1000))}K</td><td>${fmtR(Math.round(totCm/MLN))} млн</td><td>${fmtP(totRev>0?totCm/totRev:0)}</td><td>${fmt(Math.round(avgPerKg))}</td></tr>`;
+  html+='</tbody>';
+  tbl.innerHTML=html;
+}
+
+function skuUpdate(i,field,val){
+  if(!S.skus[i])return;
+  S.skus[i][field]=val;
+  // Если сменили вес/цену/потери — value уже записано, маржа пересчитается автоматически
+}
+function skuShareChange(i,pct){
+  if(!S.skus[i])return;
+  S.skus[i].share=pct/100;
+  // Обновим только текст рядом с ползунком + пересчёт маржи. Полная нормализация — на сохранении
+  const v=document.getElementById('sku-share-v-'+i);if(v)v.textContent=pct+'%';
+  // Обновим summary
+  const sumShare=S.skus.reduce((s,k)=>s+(k.share||0),0);
+  const sharePct=Math.round(sumShare*100);
+  const sumEl=document.querySelector('.sku-mix-summary');
+  if(sumEl){
+    const okCls=Math.abs(sumShare-1)<0.001?'ok':'warn';
+    sumEl.innerHTML=sumEl.innerHTML.replace(/<span class="(?:ok|warn)">[\d]+%<\/span>[^<]*/,`<span class="${okCls}">${sharePct}%</span> ${Math.abs(sumShare-1)<0.001?'✓':'(нормализуется при сохранении)'}`);
+  }
+  skuRebuildMargins();
+}
+function skuAdd(){
+  if(S.skus.length>=SKU_LIMIT)return;
+  const newId='sku_'+Date.now();
+  S.skus.push({id:newId,name:'Новый продукт',price_kzt_unit:300,purchase_eur_kg:4.5,weight_g:80,loss_pct:0.04,share:0});
+  skuRebuildAll();
+}
+function skuDel(i){
+  if(S.skus.length<=1)return;
+  S.skus.splice(i,1);
+  skuRebuildAll();
+}
+function skuApplyPreset(name){
+  const p=SKU_PRESETS[name];
+  if(!p)return;
+  S.skus=JSON.parse(JSON.stringify(p.skus));
+  skuRebuildAll();
+}
+// Полная перерисовка SKU-блока (после добавления/удаления/пресета — изменилась структура DOM)
+function skuRebuildAll(){
+  // Найдём контейнер изаменим всю секцию Ассортимент — проще пересобрать через buildInputs
+  const formEl=document.getElementById('assumptions-form');
+  if(!formEl)return;
+  // Перерисуем только sku-блок: найдём по id sku-tbody родительский isec
+  const tbody=document.getElementById('sku-tbody');
+  if(!tbody){buildInputs();return;}
+  const isec=tbody.closest('.isec');
+  if(!isec){buildInputs();return;}
+  // Заменим isec новым HTML
+  const wrap=document.createElement('div');
+  wrap.innerHTML=renderSkuBlockHtml();
+  const newIsec=wrap.firstElementChild;
+  isec.parentNode.replaceChild(newIsec,isec);
+  skuRebuildMargins();
 }
 
 // === ASSUMPTIONS (staged, save button) ===
@@ -638,20 +1026,17 @@ function buildInputs(){
     ${sl('WACC %','wacc','',10,35,1,'%')}
     ${sl('Инфляция РК %','inf','',3,18,1,'%')}
   </div></div>
-  <div class="isec"><h3>Объём импорта и рост</h3><div class="igrid">
-    ${sl('База объёма, кг/год','mosh','',50000,500000,10000,' кг')}
+  <div class="isec"><h3>Объём импорта (фуры/год)</h3><div class="igrid">
+    ${sl('Фур в год','trucks_per_year','',2,40,1,' фур')}
+    ${sl('Загрузка фуры, кг','truck_kg','',5000,25000,500,' кг')}
     ${sl('Рост 2026 (×базы)','load','',30,150,10,'%',true,0)}
     ${sl('Рост 2027 (×базы)','load','',50,250,10,'%',true,1)}
     ${sl('Рост 2028+ (×базы)','load','',100,400,10,'%',true,2)}
-  </div></div>
-  <div class="isec"><h3>Цены и маржа</h3><div class="igrid">
-    ${sl('Цена продажи, тг/кг','ph2','',1500,5000,100,' тг')}
     ${sl('Индекс цены продажи %/год','ih2','',0,15,1,'%')}
-    ${sl('Цена закупки, €/кг','psera_usd','',1.5,6,0.1,' €')}
     ${sl('Индекс цены закупки %/год','isera','',0,10,1,'%')}
     ${sl('Фрахт до РК, €/кг','pel','',0.15,1,0.05,' €')}
-    ${sl('Потери по сроку %','rvoda','',0,15,1,'%')}
   </div></div>
+  ${renderSkuBlockHtml()}
   <div class="isec"><h3>Таможня и логистика РК</h3><div class="igrid">
     ${sl('Пошлина % от FOB','rsera','',0,30,1,'%')}
     ${sl('НДС ввозной %','rel','',0,20,1,'%')}
@@ -668,6 +1053,7 @@ function buildInputs(){
     ${sl('КПН %','kpn','',10,30,1,'%')}
   </div></div>`;
   document.getElementById('assumptions-form').innerHTML=h;
+  skuRebuildMargins();
   // Fix percentage sliders (ikurs, wacc, inf, load, export_share, ih2, kpn stored as decimals)
   document.querySelectorAll('#assumptions-form input[type=range]').forEach(inp=>{
     const oninp=inp.getAttribute('oninput');
@@ -687,12 +1073,22 @@ function buildInputs(){
       inp.value=curVal;inp.nextElementSibling.textContent=curVal+'%';
       inp.setAttribute('oninput',`S['${key}']=+this.value/100;this.nextElementSibling.textContent=this.value+'%'`);
     }
+    // v2.0: trucks/truck_kg меняют объём — пересчитываем live-маржу и summary в SKU-блоке
+    if(fieldMatch&&['trucks_per_year','truck_kg'].includes(fieldMatch[1])){
+      const cur=inp.getAttribute('oninput');
+      inp.setAttribute('oninput',cur+';skuRebuildAll()');
+    }
+    // v2.0: load[i] и индексы цен/закупки тоже меняют год-1 маржу — добавим перерасчёт
+    if(loadMatch||(fieldMatch&&['ih2','isera','pel'].includes(fieldMatch[1]))){
+      const cur=inp.getAttribute('oninput');
+      inp.setAttribute('oninput',cur+';skuRebuildMargins()');
+    }
   });
 }
 
 // === MONTHLY P&L ===
 function renderPL(){
-  const m=cm(A);
+  const m=cmMulti(A);
   // Year tabs
   document.getElementById('pl-year-tabs').innerHTML=YRS.map((y,i)=>`<button class="tgb${i===plYear?' active':''}" onclick="plYear=${i};renderPL()">${y}</button>`).join('');
   const yi=plYear;
@@ -738,7 +1134,7 @@ function renderPL(){
 
 // === CAPEX ===
 function renderCapex(){
-  const m=cm(A);
+  const m=cmMulti(A);
   // EUR-часть: рефрижераторные фургоны и оборудование холодовой цепи
   // KZT-часть: холодильный склад, брендинг, маркетинг, офис, ИТ
   const euAmt=A.capex_usd*A.kurs;const kzAmt=A.capex_kzt;const total=m.capexM;
@@ -784,7 +1180,7 @@ function renderCapex(){
 // === DDS ===
 let ddsYear=0;
 function renderDDS(){
-  const m=cm(A),au=autoFlows(m);const f=flows();const{op,iv,fn,fcf,all}=fcfCalc(f);const isM=ddsMode==='manual';
+  const m=cmMulti(A),au=autoFlows(m);const f=flows();const{op,iv,fn,fcf,all}=fcfCalc(f);const isM=ddsMode==='manual';
   const yi=ddsYear;const yr=YRS[yi];
   const ramp=yi===0?[0.3,0.4,0.5,0.6,0.7,0.8,0.85,0.9,0.95,1,1,1]:MONTHS.map(()=>1);
   const rampSum=ramp.reduce((s,v)=>s+v,0);
@@ -858,7 +1254,7 @@ function renderDDS(){
 }
 
 function renderCFTable(){
-  const m=cm(A);const f=flows();const{op,iv,fn,fcf,all}=fcfCalc(f);
+  const m=cmMulti(A);const f=flows();const{op,iv,fn,fcf,all}=fcfCalc(f);
   const cumA=[];let cs=all[0];fcf.forEach(v=>{cs+=v;cumA.push(cs);});const aYrs=['2025',...YRS];
   const rows=[
     {l:'I. Операционный',v:null,c:'sh'},{l:'Поступления',v:[0,...f.receipts],c:''},{l:'Платежи поставщикам',v:[0,...f.suppliers],c:''},
@@ -878,7 +1274,7 @@ function renderCFTable(){
 
 // === METRICS ===
 function renderMetrics(){
-  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
+  const m=cmMulti(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
   const NPV=npvC(A.wacc,allTg),IRR=irr(allTg),PI=1+NPV/(m.capexM*MLN);
   // BUG2 FIX: payback off-by-one
   let pp=null,cum=allTg[0];
@@ -893,7 +1289,7 @@ function renderMetrics(){
     {l:'Окупаемость',v:pp?pp.toFixed(1)+' лет':'—',s:'простой',c:''},
     {l:'CAPEX',v:fmt(Math.round(m.capexM))+' млн',s:'EU €'+fmt(Math.round(A.capex_usd*1000))+'K + РК '+fmt(Math.round(A.capex_kzt))+' млн',c:'w'},
     {l:'BEP кг/год',v:fmt(Math.round(bepT)),s:'мин. безубыточности',c:'a'},
-    {l:'BEP %',v:fmtP(bepT/A.mosh),s:'запас '+fmtP(1-bepT/A.mosh),c:'a'},
+    {l:'BEP %',v:fmtP(bepT/(A.trucks_per_year*A.truck_kg)),s:'запас '+fmtP(1-bepT/(A.trucks_per_year*A.truck_kg)),c:'a'},
     {l:'CM/кг',v:fmt(Math.round(cmT)),s:'тг/кг',c:''},
   ];
   document.getElementById('metrics-kpi').innerHTML=kpis.map(({l,v,s,c})=>`<div class="kc ${c}"><div class="kc-label">${l}</div><div class="kc-val" style="font-size:17px">${v}</div><div class="kc-sub">${s}</div></div>`).join('');
@@ -907,8 +1303,10 @@ function renderMetrics(){
 // === SCENARIOS ===
 function renderScenarios(){
   function sc(pm,loadOv,sm,em){
-    const a={...A,ph2:A.ph2*pm,psera_usd:A.psera_usd*sm,pel:A.pel*em,load:[...loadOv]};
-    const m=cm(a);const au=autoFlows(m);
+    // v2.0: множители цены/закупки применяются ко ВСЕМ SKU. pel — общий фрахт за кг
+    const skusMod=A.skus.map(k=>({...k,price_kzt_unit:k.price_kzt_unit*pm,purchase_eur_kg:k.purchase_eur_kg*sm}));
+    const a={...A,pel:A.pel*em,load:[...loadOv],skus:skusMod};
+    const m=cmMulti(a);const au=autoFlows(m);
     const op2=YRS.map((_,i)=>au.receipts[i]+au.suppliers[i]+au.fot_pay[i]+au.kpn_pay[i]);
     const fcf2=op2.map((_,i)=>op2[i]+au.wc[i]);const allT=[-m.capexM,...fcf2].map(v=>v*MLN);
     // BUG2 FIX: payback off-by-one
@@ -936,17 +1334,30 @@ function renderScenarios(){
 
 // === SENSITIVITY ===
 function renderSensitivity(){
-  const m=cm(A);const bnp=m.np[2];
-  function d(o){const a2={...A,...o};if(o.load)a2.load=[...o.load];return cm(a2).np[2]-bnp;}
+  const m=cmMulti(A);const bnp=m.np[2];
+  // v2.0: skuPrice/skuPurchase/skuLoss — множители ко всем SKU; остальные ключи — поля A
+  function d(o){
+    const a2={...A,...o};
+    if(o.load)a2.load=[...o.load];
+    if(o.skuPrice||o.skuPurchase||o.skuLoss){
+      a2.skus=A.skus.map(k=>({
+        ...k,
+        price_kzt_unit:o.skuPrice?k.price_kzt_unit*o.skuPrice:k.price_kzt_unit,
+        purchase_eur_kg:o.skuPurchase?k.purchase_eur_kg*o.skuPurchase:k.purchase_eur_kg,
+        loss_pct:o.skuLoss?Math.min(k.loss_pct*o.skuLoss,0.5):k.loss_pct,
+      }));
+    }
+    return cmMulti(a2).np[2]-bnp;
+  }
   const factors=[
-    {l:'Цена продажи тг/кг',up:d({ph2:A.ph2*1.2}),dn:d({ph2:A.ph2*.8})},
+    {l:'Цена продажи тг/шт',up:d({skuPrice:1.2}),dn:d({skuPrice:0.8})},
     {l:'Рост продаж (объём)',up:d({load:A.load.map(v=>v*1.2)}),dn:d({load:A.load.map(v=>v*.8)})},
     // +20% закупки = рост затрат (прибыль падает), поэтому up использует *.8 (хороший знак), dn *1.2
-    {l:'Цена закупки €/кг',up:d({psera_usd:A.psera_usd*.8}),dn:d({psera_usd:A.psera_usd*1.2})},
+    {l:'Цена закупки €/кг',up:d({skuPurchase:0.8}),dn:d({skuPurchase:1.2})},
     {l:'Курс EUR/тг',up:d({kurs:A.kurs*.8}),dn:d({kurs:A.kurs*1.2})},
     {l:'Фрахт €/кг',up:d({pel:A.pel*.8}),dn:d({pel:A.pel*1.2})},
     {l:'Пошлина % (таможня)',up:d({rsera:A.rsera*.8}),dn:d({rsera:A.rsera*1.2})},
-    {l:'Потери по сроку %',up:d({rvoda:A.rvoda*.5}),dn:d({rvoda:A.rvoda*1.5})},
+    {l:'Потери по сроку %',up:d({skuLoss:0.5}),dn:d({skuLoss:1.5})},
     {l:'CAPEX (запуск)',up:d({capex_kzt:A.capex_kzt*.85}),dn:d({capex_kzt:A.capex_kzt*1.15})},
   ].sort((a,b)=>Math.abs(b.up-b.dn)-Math.abs(a.up-a.dn));
   mkC('c-tornado','bar',{labels:factors.map(f=>f.l),datasets:[
@@ -957,10 +1368,10 @@ function renderSensitivity(){
   const revPerTon_s=m.rev[2]/m.vol[2];
   const bepT=m.fT[2]/(revPerTon_s-m.vT[2]/m.vol[2]);const cmT=revPerTon_s-m.vT[2]/m.vol[2];
   document.getElementById('bep-content').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">${[
-    ['BEP кг/год',fmt(Math.round(bepT)),'кг'],['BEP %',fmtP(bepT/A.mosh),'от базы'],['Запас',fmtP(1-bepT/A.mosh),'(V−BEP)/V'],['CM/кг',fmt(Math.round(cmT)),'тг/кг'],
+    ['BEP кг/год',fmt(Math.round(bepT)),'кг'],['BEP %',fmtP(bepT/(A.trucks_per_year*A.truck_kg)),'от базы'],['Запас',fmtP(1-bepT/(A.trucks_per_year*A.truck_kg)),'(V−BEP)/V'],['CM/кг',fmt(Math.round(cmT)),'тг/кг'],
   ].map(([l,v,s])=>`<div class="kc a"><div class="kc-label">${l}</div><div class="kc-val" style="font-size:16px">${v}</div><div class="kc-sub">${s}</div></div>`).join('')}</div>`;
   const loads=[.2,.3,.4,.5,.6,.7,.8,.9,1];const vcPt=m.vT[2]/m.vol[2];
-  const profits=loads.map(l=>{const vol=A.mosh*l;return((m.ph2y[2]-vcPt)*vol-m.fT[2])/MLN;});
+  const profits=loads.map(l=>{const vol=(A.trucks_per_year*A.truck_kg)*l;return((m.ph2y[2]-vcPt)*vol-m.fT[2])/MLN;});
   mkC('c-bep','line',{labels:loads.map(l=>Math.round(l*100)+'%'),datasets:[{data:profits.map(v=>Math.round(v)),borderColor:'#8FA857',backgroundColor:'rgba(143,168,87,.1)',fill:true,pointRadius:3,tension:.4}]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}},plugins:{legend:{display:false}}});
 }
 
@@ -972,7 +1383,7 @@ function renderHR(){
       ['','ФОТ/год',fmt(Math.round(totalFot/MLN))+' млн','без нагрузки'],
       ['','Нагрузка',fmt(Math.round(totalFot*nrabot/MLN))+' млн','11.5% (ОПВ+Соц+ОСМС)'],
       ['gold','Полная',fmt(Math.round(totalFot*(1+nrabot)/MLN))+' млн','/год'],
-      ['','ФОТ/кг',fmt(Math.round(totalFot*(1+nrabot)/A.mosh))+' тг/кг','база 1-го года'],
+      ['','ФОТ/кг',fmt(Math.round(totalFot*(1+nrabot)/(A.trucks_per_year*A.truck_kg)))+' тг/кг','база 1-го года'],
     ].map(([c,l,v,s])=>`<div class="kc ${c}"><div class="kc-label">${l}</div><div class="kc-val" style="font-size:17px">${v}</div><div class="kc-sub">${s}</div></div>`).join('')}
   </div>`;
   // Add employee form
@@ -1139,7 +1550,7 @@ function rmDel(id){rmTasks=rmTasks.filter(t=>t.id!==id);rmSave();renderRoadmap()
 
 
 function renderInvest(){
-  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
+  const m=cmMulti(A);const f=flows();const{all,fcf}=fcfCalc(f);const allTg=all.map(v=>v*MLN);
   const NPV=npvC(A.wacc,allTg),IRR=irr(allTg),PI=1+NPV/(m.capexM*MLN);
   // BUG2 FIX: payback off-by-one
   let pp=null,cum=allTg[0];
@@ -1281,7 +1692,7 @@ function renderInvest(){
 
 // === INVESTOR CALCULATOR ===
 function calcInvestor(){
-  const m=cm(A);const f=flows();const{all,fcf}=fcfCalc(f);
+  const m=cmMulti(A);const f=flows();const{all,fcf}=fcfCalc(f);
   const fotAnnual=hrTotalFot();
   const nwc=Math.round(m.rev[0]*0.22/MLN);   // оборотка = ~22% выручки 1-го года (2 партии)
   const fotPre=Math.round(fotAnnual*0.33/MLN); // 4 мес ФОТ до первой выручки
