@@ -700,6 +700,28 @@ function mkC(id,type,data,opts={}){
   const grid={color:'rgba(255,255,255,.06)'},tick={color:'#7A6850'};
   charts[id]=new Chart(ctx,{type,data,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:tick,grid:grid},y:{ticks:tick,grid:grid}},...opts}});
 }
+// Подбор минимального количества фур/год для окупаемости за targetYears.
+// Используется в banner'е, когда текущая загрузка слишком мала для NPV>0.
+// Сканирует от текущего значения вверх до 60. Возвращает {n, pp, year} или null.
+function findMinTrucksForPayback(targetYears){
+  const startN=Math.max(A.trucks_per_year+1,1);
+  for(let n=startN;n<=60;n++){
+    const A_test={...A,trucks_per_year:n};
+    const m_t=cmMulti(A_test);
+    const fot_t=m_t.fot,capex_t=m_t.capexM;
+    // Воспроизводим autoFlows + fcfCalc для тестового A (без manual ov)
+    const op=YRS.map((_,i)=>m_t.rev[i]*1.12/MLN-(m_t.oc[i]-m_t.fF[i])/MLN-m_t.fF[i]/MLN-m_t.kp[i]/MLN);
+    const wc=[0,-50,-80,-20,-20];
+    const fcf_t=YRS.map((_,i)=>op[i]+wc[i]);
+    let pp=null,cum=-capex_t;
+    fcf_t.forEach((v,i)=>{const prev=cum;cum+=v;if(cum>=0&&pp===null&&v!==0)pp=i+(-prev)/v;});
+    if(pp!==null&&pp<=targetYears){
+      return{n,pp,year:YRS[Math.floor(pp)]};
+    }
+  }
+  return null;
+}
+
 function getMetrics(){
   const m=cmMulti(A);const f=flows();const{all,fcf}=fcfCalc(f);
   const allTg=all.map(v=>v*MLN);
@@ -821,12 +843,16 @@ function renderDashboard(){
     } else {
       bannerEl.className='payback-banner neg';
       const need=-finalCum; // сколько не хватает в млн
+      // Подбор минимальной загрузки для окупаемости за 5 лет — сканируем trucks_per_year
+      const recTrucks=findMinTrucksForPayback(5);
+      const recHint=recTrucks
+        ? `<br>📌 <b>Рекомендация:</b> чтобы проект окупился за 5 лет, нужно <b>≥ ${recTrucks.n} фур/год</b> (текущее: ${A.trucks_per_year}). При ${recTrucks.n} фур окупаемость ≈ <b>${recTrucks.pp.toFixed(1)} года</b>, выход в плюс — <b>${recTrucks.year}</b>.`
+        : `<br>📌 Даже при 60 фурах/год проект не выходит в плюс за 5 лет — пересмотри цену продажи или CAPEX/ФОТ.`;
       bannerEl.innerHTML=`<div class="payback-banner-icon">⚠</div>
         <div class="payback-banner-text">
           При текущих допущениях проект <b>не окупается за 5 лет</b>.
           К концу ${YRS[YRS.length-1]} накопленный поток = <b>${fmt(Math.round(finalCum))} млн тг</b> (минус ${fmt(Math.round(need))} млн до нуля).
-          NPV = <b>${fmtM(NPV)}</b>, IRR = <b>${fmtP(IRR)}</b>.
-          <span style="color:var(--text2)">Что подкрутить: загрузка фур, цена продажи, доли SKU с лучшей маржой/кг.</span>
+          NPV = <b>${fmtM(NPV)}</b>, IRR = <b>${fmtP(IRR)}</b>.${recHint}
         </div>`;
     }
   }
