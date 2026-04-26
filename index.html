@@ -431,6 +431,9 @@ const A_DEFAULT={kurs:580,ikurs:0.05,wacc:0.20,inf:0.09,
   trucks_per_year:10,truck_kg:20000,
   mosh:200000,load:[0.5,1.0,1.6,2.2,2.8],
   ph2:2900,ih2:0.07,ph2_exp_usd:0,ih2_exp:0,psera_usd:4.0,isera:0.04,pel:0.38,iel:0.03,pvoda:45,pteplo:30,vteplo:30,
+  // СВХ (склад временного хранения, до растаможки) — отдельная статья таможенных платежей
+  // Дефолт: 5 дней оформления × 100 тг/кг/мес тариф СВХ для пищёвки с холодом ≈ 16.7 тг/кг
+  vsvh_days:5,psvh:100,
   rsera:0.125,rel:0.12,rvoda:0.038,
   capex_usd:0.18,capex_kzt:142,amort_spi:7,nrabot:0.115,
   to:4,strah:3,adm:14,ecol:0,nimush:0,zeml:0,okhrana:6,kpn:0.20,
@@ -594,7 +597,10 @@ function cmSku(a,sku){
   const rev=YRS.map((_,i)=>sold[i]*ph2y[i]);
   const vS=YRS.map((_,i)=>vol_kg[i]*psy[i]);
   const fobPerKg=YRS.map((_,i)=>psy[i]+pey[i]);
-  const vE=YRS.map((_,i)=>vol_kg[i]*(pey[i]+fobPerKg[i]*a.rsera+fobPerKg[i]*0.015));
+  // СВХ: тариф (тг/кг/мес) × срок оформления (дн) / 30. Включается в vE как часть таможенного блока.
+  // psvh/vsvh_days fallback на 0 — обратная совместимость со старыми сохранениями.
+  const cSvh=YRS.map((_,i)=>(a.psvh||0)*((a.vsvh_days||0)/30)*Math.pow(1+a.inf,i));
+  const vE=YRS.map((_,i)=>vol_kg[i]*(pey[i]+fobPerKg[i]*a.rsera+fobPerKg[i]*0.015+cSvh[i]));
   const vW=YRS.map((_,i)=>vol_kg[i]*(a.pvoda*Math.pow(1+a.inf,i)+a.pteplo*(a.vteplo/30)*Math.pow(1+a.inf,i)));
   const vT=YRS.map((_,i)=>vS[i]+vE[i]+vW[i]);
   // Контрибуция (без распределения общих) — главная метрика SKU
@@ -1156,12 +1162,16 @@ function buildInputs(){
     ${sl('Фрахт до РК, €/кг','pel','',0.15,1,0.05,' €')}
   </div></div>
   ${renderSkuBlockHtml()}
-  <div class="isec"><h3>Таможня и логистика РК</h3><div class="igrid">
+  <div class="isec"><h3>Таможня + СВХ (до растаможки)</h3><div class="igrid">
     ${sl('Пошлина % от FOB','rsera','',0,30,1,'%')}
     ${sl('НДС ввозной %','rel','',0,20,1,'%')}
+    ${sl('Срок оформления (СВХ), дн','vsvh_days','',1,21,1,' дн')}
+    ${sl('Тариф СВХ, тг/кг/мес','psvh','',30,250,10,' тг')}
+  </div></div>
+  <div class="isec"><h3>Коммерческий склад + логистика РК (после растаможки)</h3><div class="igrid">
     ${sl('Логистика РК, тг/кг','pvoda','',20,120,5,' тг')}
-    ${sl('Хранение, тг/кг/мес','pteplo','',10,80,5,' тг')}
-    ${sl('Средний срок хранения, дн','vteplo','',10,90,5,' дн')}
+    ${sl('Тариф холодсклада, тг/кг/мес','pteplo','',10,80,5,' тг')}
+    ${sl('Срок хранения у нас, дн','vteplo','',10,90,5,' дн')}
   </div></div>
   <div class="isec"><h3>CAPEX — Запуск бизнеса</h3><div class="igrid">
     ${sl('Рефрижер. фургоны, €тыс','capex_usd','',0.05,0.5,0.01,' €М')}
