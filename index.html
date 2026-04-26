@@ -233,6 +233,18 @@ html,body{background:var(--navy);color:var(--text);font-family:var(--font);font-
 .sku-margin-tbl .badge-best{display:inline-block;padding:1px 6px;border-radius:3px;background:rgba(143,168,87,.15);color:var(--green);font-size:9px;margin-left:6px}
 .sku-margin-tbl .badge-worst{display:inline-block;padding:1px 6px;border-radius:3px;background:rgba(200,90,62,.15);color:var(--red);font-size:9px;margin-left:6px}
 .capacity-warn{margin-top:8px;padding:8px 11px;background:rgba(200,90,62,.12);border:1px solid rgba(200,90,62,.3);border-left:3px solid var(--red);border-radius:0 6px 6px 0;font-size:11px;color:var(--red);font-family:var(--mono)}
+.payback-banner{margin-bottom:18px;padding:14px 18px;border-radius:8px;border:1px solid var(--border2);display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.payback-banner.pos{background:linear-gradient(90deg,rgba(143,168,87,.14),rgba(143,168,87,.04));border-left:3px solid var(--green)}
+.payback-banner.neg{background:linear-gradient(90deg,rgba(200,90,62,.14),rgba(200,90,62,.04));border-left:3px solid var(--red)}
+.payback-banner-icon{font-size:24px;line-height:1;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,.04)}
+.payback-banner.pos .payback-banner-icon{color:var(--green)}
+.payback-banner.neg .payback-banner-icon{color:var(--red)}
+.payback-banner-text{font-size:13px;color:var(--text);line-height:1.55}
+.payback-banner-text b{font-family:var(--mono);font-weight:500}
+.payback-banner.pos .payback-banner-text b{color:var(--green)}
+.payback-banner.neg .payback-banner-text b{color:var(--red)}
+.payback-banner-text .neutral{color:var(--gold);font-family:var(--mono);font-weight:500}
+@media(max-width:640px){.payback-banner{grid-template-columns:1fr;text-align:center}.payback-banner-icon{margin:0 auto}}
 /* Dashboard SKU view toggle */
 .dash-view-tgg{display:flex;background:var(--navy4);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-left:auto}
 .dash-view-tgg .tgb{padding:5px 13px;font-size:12px}
@@ -299,9 +311,10 @@ html,body{background:var(--navy);color:var(--text);font-family:var(--font);font-
         <div class="tgg dash-view-tgg" id="dash-view-tgg"></div>
       </div>
       <div class="kpi-grid" id="kpi-grid"></div>
+      <div id="payback-banner"></div>
       <div class="cg">
         <div class="cb"><div class="ct">Выручка и EBITDA по годам, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--teal)"></span>Выручка</span><span><span class="lsq" style="background:var(--green)"></span>EBITDA</span></div><div class="cw"><canvas id="c-rev"></canvas></div></div>
-        <div class="cb"><div class="ct">Накопленный FCF, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--red)"></span>Отриц.</span><span><span class="lsq" style="background:var(--green)"></span>Полож.</span></div><div class="cw"><canvas id="c-cumfcf"></canvas></div></div>
+        <div class="cb"><div class="ct">Накопленный денежный поток, млн тг</div><div class="leg"><span><span class="lsq" style="background:var(--red)"></span>Убыток</span><span><span class="lsq" style="background:var(--green)"></span>В плюсе</span><span style="color:var(--text3);font-style:italic">пунктир = горизонт окупаемости</span></div><div class="cw"><canvas id="c-cumfcf"></canvas></div></div>
         <div class="cb"><div class="ct" id="opex-chart-title">Структура OPEX, млн тг</div><div class="leg" id="pie-leg"></div><div class="cw"><canvas id="c-pie"></canvas></div></div>
         <div class="cb"><div class="ct">Себестоимость 1 кг, тг/кг</div><div class="leg"><span><span class="lsq" style="background:var(--gold)"></span>Перем.</span><span><span class="lsq" style="background:var(--teal)"></span>Пост.</span><span><span class="lsq" style="background:var(--muted)"></span>Аморт.</span></div><div class="cw"><canvas id="c-se"></canvas></div></div>
       </div>
@@ -755,6 +768,14 @@ function renderDashboard(){
   // BUG2 FIX: payback off-by-one — use i instead of i+1
   let pp=null,cum=allTg[0];
   fcf.forEach((v,i)=>{const prev=cum;cum+=v*MLN;if(cum>=0&&pp===null&&v*MLN!==0)pp=i+(-prev)/(v*MLN);});
+  // Cumulative cash flow по операционным годам (для KPI и графика)
+  const cumA=[];let cs=all[0];fcf.forEach(v=>{cs+=v;cumA.push(cs);}); // в млн (как all/fcf)
+  const ppYearIdx=cumA.findIndex(v=>v>=0); // индекс первого года выхода в плюс
+  const ppYear=ppYearIdx>=0?YRS[ppYearIdx]:null;
+  // Месяц внутри года (если pp = 3.625 → месяц 8 = август)
+  const ppMonths=pp!==null?Math.max(1,Math.round((pp-Math.floor(pp))*12)||12):null;
+  const MONTHS=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  const ppMonthLabel=ppMonths?MONTHS[Math.min(ppMonths-1,11)]:null;
 
   // Year tabs + view toggle (общий бизнес ↔ по продуктам)
   document.getElementById('dash-year-tabs').innerHTML=YRS.map((y,i)=>`<button class="tgb${i===dashYear?' active':''}" onclick="dashYear=${i};renderDashboard()">${y}</button>`).join('');
@@ -768,7 +789,7 @@ function renderDashboard(){
     {l:'Чистая прибыль ('+yr+')',v:fmtM(m.np[yi]),s:fmtP(m.np[yi]/m.rev[yi]),c:m.np[yi]>0?'g':'r'},
     {l:'NPV',v:fmtM(NPV),s:'€'+fmt(Math.round(NPV/MLN/A.kurs*1000))+' тыс',c:NPV>0?'g':'r'},
     {l:'IRR',v:fmtP(IRR),s:'vs WACC '+fmtP(A.wacc),c:IRR>A.wacc?'g':'r'},
-    {l:'Окупаемость',v:pp?pp.toFixed(1)+' лет':'—',s:'простой',c:''},
+    {l:'Окупаемость',v:pp?pp.toFixed(1)+' лет':'>5 лет',s:ppYear?'выход в плюс — '+ppYear:'не окупается за горизонт',c:pp?(pp<=3?'g':pp<=5?'a':'r'):'r'},
     {l:'BEP ('+yr+')',v:isFinite(bepT)&&bepT>0?fmtP(bepT/(A.trucks_per_year*A.truck_kg)):'—',s:isFinite(bepT)&&bepT>0?'запас '+fmtP(1-bepT/(A.trucks_per_year*A.truck_kg)):'—',c:'a'},
     {l:'CAPEX',v:fmt(Math.round(m.capexM))+' млн',s:'€'+fmt(Math.round(m.capexM/A.kurs*1000))+'K',c:'w'},
     {l:'Команда',v:hrTotalPeople()+' чел',s:fmt(Math.round(m.fot/MLN))+' млн ФОТ',c:''},
@@ -777,13 +798,89 @@ function renderDashboard(){
   ];
   document.getElementById('kpi-grid').innerHTML=kpis.map(({l,v,s,c})=>`<div class="kc ${c}"><div class="kc-label">${l}</div><div class="kc-val">${v}</div><div class="kc-sub">${s}</div></div>`).join('');
 
+  // === PAYBACK BANNER (executive summary) ===
+  const bannerEl=document.getElementById('payback-banner');
+  if(bannerEl){
+    const finalCum=cumA[cumA.length-1]; // в млн тг (на конец 5-го года)
+    if(pp!==null&&ppYear){
+      const isHealthy=NPV>0&&IRR>A.wacc;
+      bannerEl.className='payback-banner '+(isHealthy?'pos':'neg');
+      bannerEl.innerHTML=`<div class="payback-banner-icon">${isHealthy?'✓':'⚠'}</div>
+        <div class="payback-banner-text">
+          При текущих допущениях проект <b>выходит в плюс с ${ppYear} года</b>${ppMonthLabel?` (≈ ${ppMonthLabel})`:''}.
+          Окупаемость <b>${pp.toFixed(1)} года</b> с момента старта операций.
+          NPV = <b>${fmtM(NPV)}</b>, IRR = <b>${fmtP(IRR)}</b> при WACC <span class="neutral">${fmtP(A.wacc)}</span>.
+          К концу ${YRS[YRS.length-1]} накопленный поток ≈ <b>${fmt(Math.round(finalCum))} млн тг</b>.
+        </div>`;
+    } else {
+      bannerEl.className='payback-banner neg';
+      const need=-finalCum; // сколько не хватает в млн
+      bannerEl.innerHTML=`<div class="payback-banner-icon">⚠</div>
+        <div class="payback-banner-text">
+          При текущих допущениях проект <b>не окупается за 5 лет</b>.
+          К концу ${YRS[YRS.length-1]} накопленный поток = <b>${fmt(Math.round(finalCum))} млн тг</b> (минус ${fmt(Math.round(need))} млн до нуля).
+          NPV = <b>${fmtM(NPV)}</b>, IRR = <b>${fmtP(IRR)}</b>.
+          <span style="color:var(--text2)">Что подкрутить: загрузка фур, цена продажи, доли SKU с лучшей маржой/кг.</span>
+        </div>`;
+    }
+  }
+
   // Highlight selected year bar
   mkC('c-rev','bar',{labels:YRS,datasets:[
     {data:m.rev.map(v=>Math.round(v/MLN)),backgroundColor:YRS.map((_,i)=>i===yi?'rgba(212,165,116,1)':'rgba(212,165,116,.4)'),borderRadius:3},
     {data:m.eb.map(v=>Math.round(v/MLN)),backgroundColor:YRS.map((_,i)=>i===yi?'rgba(143,168,87,1)':'rgba(143,168,87,.4)'),borderRadius:3}
   ]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}}});
-  const cumA=[];let cs=all[0];fcf.forEach(v=>{cs+=v;cumA.push(Math.round(cs));});
-  mkC('c-cumfcf','bar',{labels:YRS,datasets:[{data:cumA,backgroundColor:cumA.map((v,i)=>{const base=v<0?'232,64,64':'29,184,122';return i===yi?`rgba(${base},1)`:`rgba(${base},.4)`;}),borderRadius:3}]},{scales:{x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:'rgba(255,255,255,.06)'}}}});
+
+  // === Cumulative FCF — line chart с явной zero-line и подсветкой года выхода в плюс ===
+  // 6 точек: старт (-CAPEX) + 5 операционных лет
+  const cumLine=[Math.round(all[0]),...cumA.map(v=>Math.round(v))];
+  const cumLabels=['Старт',...YRS];
+  const ptColors=cumLine.map(v=>v<0?'#C85A3E':'#8FA857');
+  const ptRadii=cumLine.map((v,i)=>{
+    if(ppYearIdx>=0&&i===ppYearIdx+1)return 7; // первый год в плюсе — большая точка (offset +1 из-за «Старт»)
+    return 4;
+  });
+  mkC('c-cumfcf','line',{labels:cumLabels,datasets:[{
+    data:cumLine,
+    borderColor:'#D4A574',
+    backgroundColor:ctx=>{
+      const c=ctx.chart.ctx,a=c.canvas;
+      const g=c.createLinearGradient(0,0,0,a.height||200);
+      g.addColorStop(0,'rgba(143,168,87,.28)');
+      g.addColorStop(0.5,'rgba(143,168,87,.04)');
+      g.addColorStop(0.5,'rgba(200,90,62,.04)');
+      g.addColorStop(1,'rgba(200,90,62,.28)');
+      return g;
+    },
+    fill:'origin',
+    tension:0.25,
+    pointBackgroundColor:ptColors,
+    pointBorderColor:ptColors,
+    pointRadius:ptRadii,
+    pointHoverRadius:8,
+    borderWidth:2.2
+  }]},{
+    scales:{
+      x:{ticks:{color:'#7A6850'},grid:{color:'rgba(255,255,255,.06)'}},
+      y:{ticks:{color:'#7A6850',callback:v=>v+' млн'},grid:{color:ctx=>ctx.tick.value===0?'rgba(244,236,216,.45)':'rgba(255,255,255,.06)',lineWidth:ctx=>ctx.tick.value===0?1.5:1}}
+    },
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{
+        label:c=>{
+          const v=c.parsed.y;
+          const sign=v>=0?'+':'';
+          const status=v<0?' (убыток)':' (в плюсе)';
+          return ' '+sign+fmt(v)+' млн'+status;
+        },
+        title:items=>{
+          const lbl=items[0].label;
+          if(ppYearIdx>=0&&lbl===YRS[ppYearIdx])return lbl+' · ✓ выход в плюс';
+          return lbl;
+        }
+      }}
+    }
+  });
 
   // OPEX pie for selected year
   document.getElementById('opex-chart-title').textContent='Структура OPEX '+yr+', млн тг';
@@ -877,11 +974,11 @@ function renderSkuBlockHtml(){
     return `<tr>
       <td><input type="text" value="${sk.name||''}" oninput="skuUpdate(${i},'name',this.value)"></td>
       <td><input type="number" min="0" step="10" value="${sk.price_kzt_unit||0}" oninput="skuUpdate(${i},'price_kzt_unit',+this.value);skuRebuildMargins()"></td>
-      <td><input type="number" min="0" step="0.1" value="${sk.purchase_eur_kg||0}" oninput="skuUpdate(${i},'purchase_eur_kg',+this.value);skuRebuildMargins()"></td>
+      <td><input type="number" min="0" step="0.1" value="${sk.purchase_eur_kg||0}" oninput="skuUpdate(${i},'purchase_eur_kg',+this.value);skuRebuildMargins();skuLiveCommit()"></td>
       <td><input type="number" min="1" step="1" value="${sk.weight_g||0}" oninput="skuUpdate(${i},'weight_g',+this.value);skuRebuildMargins()"></td>
       <td><input type="number" min="0" max="50" step="0.5" value="${((sk.loss_pct||0)*100).toFixed(1)}" oninput="skuUpdate(${i},'loss_pct',+this.value/100);skuRebuildMargins()"></td>
       <td><div class="sku-share-row">
-        <input type="range" min="0" max="100" step="1" value="${sharePctI}" oninput="skuShareChange(${i},+this.value)">
+        <input type="range" min="0" max="100" step="1" value="${sharePctI}" oninput="skuShareChange(${i},+this.value);skuLiveCommit()">
         <span class="sku-share-val" id="sku-share-v-${i}">${sharePctI}%</span>
       </div></td>
       <td style="text-align:center"><button class="sku-del-btn" onclick="skuDel(${i})" title="Удалить" ${skus.length<=1?'disabled style="opacity:.15;cursor:not-allowed"':''}>✕</button></td>
@@ -961,6 +1058,28 @@ function skuUpdate(i,field,val){
   if(!S.skus[i])return;
   S.skus[i][field]=val;
   // Если сменили вес/цену/потери — value уже записано, маржа пересчитается автоматически
+}
+// Live-commit для полей «Закупка €/кг» и «Доля в фуре» — обновляет A.skus и пересчитывает
+// дашборд без необходимости нажимать «Сохранить допущения». Debounce 300мс — чтобы не лагало
+// при тягании ползунка. Если пользователь на странице «Допущения» — не пересобираем форму
+// (иначе фокус и положение ползунка слетят), обновляем только top-bar (NPV/IRR в шапке).
+// При переключении на любую другую панель новые значения подхватятся автоматически.
+let skuLiveTimer=null;
+function skuLiveCommit(){
+  if(skuLiveTimer)clearTimeout(skuLiveTimer);
+  skuLiveTimer=setTimeout(()=>{
+    const skusCopy=JSON.parse(JSON.stringify(S.skus||[]));
+    skusNormalize(skusCopy);
+    A.skus=skusCopy;
+    skusSave();
+    const active=document.querySelector('.panel.active');
+    const id=active?active.id.replace('panel-',''):'';
+    if(id==='assumptions'){
+      try{renderBar();}catch(e){}
+    }else{
+      renderAll();
+    }
+  },300);
 }
 function skuShareChange(i,pct){
   if(!S.skus[i])return;
@@ -1279,6 +1398,8 @@ function renderMetrics(){
   // BUG2 FIX: payback off-by-one
   let pp=null,cum=allTg[0];
   fcf.forEach((v,i)=>{const prev=cum;cum+=v*MLN;if(cum>=0&&pp===null&&v*MLN!==0)pp=i+(-prev)/(v*MLN);});
+  const cumA_m=[];let cs_m=all[0];fcf.forEach(v=>{cs_m+=v;cumA_m.push(cs_m);});
+  const ppYear_m=cumA_m.findIndex(v=>v>=0)>=0?YRS[cumA_m.findIndex(v=>v>=0)]:null;
   // BUG5 FIX: BEP uses total revenue per ton
   const revPerTon_m=m.rev[2]/m.vol[2];
   const bepT=m.fT[2]/(revPerTon_m-m.vT[2]/m.vol[2]);const cmT=revPerTon_m-m.vT[2]/m.vol[2];
@@ -1286,7 +1407,7 @@ function renderMetrics(){
     {l:'NPV (WACC '+fmtP(A.wacc)+')',v:fmtM(NPV),s:'€'+fmt(Math.round(NPV/MLN/A.kurs*1000))+' тыс',c:NPV>0?'g':'r'},
     {l:'IRR',v:fmtP(IRR),s:'в '+fmt(IRR/A.wacc,1)+'x WACC',c:IRR>A.wacc?'g':'r'},
     {l:'PI',v:PI.toFixed(2)+'×',s:'1 + NPV/CAPEX',c:PI>1?'g':'r'},
-    {l:'Окупаемость',v:pp?pp.toFixed(1)+' лет':'—',s:'простой',c:''},
+    {l:'Окупаемость',v:pp?pp.toFixed(1)+' лет':'>5 лет',s:ppYear_m?'выход в плюс — '+ppYear_m:'не окупается',c:pp?(pp<=3?'g':pp<=5?'a':'r'):'r'},
     {l:'CAPEX',v:fmt(Math.round(m.capexM))+' млн',s:'EU €'+fmt(Math.round(A.capex_usd*1000))+'K + РК '+fmt(Math.round(A.capex_kzt))+' млн',c:'w'},
     {l:'BEP кг/год',v:fmt(Math.round(bepT)),s:'мин. безубыточности',c:'a'},
     {l:'BEP %',v:fmtP(bepT/(A.trucks_per_year*A.truck_kg)),s:'запас '+fmtP(1-bepT/(A.trucks_per_year*A.truck_kg)),c:'a'},
